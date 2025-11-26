@@ -1,3 +1,68 @@
+# FTC QR Builder
+
+Offline Progressive Web App to visually create autonomous command sequences for FTC robots. It generates a compressed QR code that can be scanned by a Limelight camera and decoded by the robot.
+
+This project is open-source and licensed under the MIT License — see `LICENSE`.
+
+## Quick Start (Development)
+
+1. Download required libs into the project root (next to `index.html`) if you want them locally:
+
+```powershell
+Invoke-WebRequest -Uri "https://unpkg.com/blockly/blockly.min.js" -OutFile ".\blockly.min.js"
+Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js" -OutFile ".\pako.min.js"
+Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/kjua@0.1.1/kjua.min.js" -OutFile ".\kjua.min.js"
+```
+
+2. Serve the folder during development using a small server:
+
+```powershell
+# from the project folder
+python -m http.server 5500
+# open http://127.0.0.1:5500
+```
+
+3. (Optional) Build a single HTML file for portability: run the included `build_single_file.ps1` which inlines local scripts and styles into a single `bundle.html`.
+
+## Features
+
+- Google Blockly drag-and-drop editor
+- Custom blocks: Start, DriveTo, IntakeRow, DepositAt, Delay
+- JSON → gzip → base64 → QR
+- Offline PWA with caching
+
+## Usage
+
+1. Open `index.html` in your browser (or host via VS Code Live Server).
+2. Drag out a **Start** block.
+3. Add blocks like **DriveTo**, **Deposit**, **Delay**, etc.
+4. Click **Generate QR** to see the QR code.
+5. The last QR is cached offline for reuse.
+
+## Robot Integration
+
+Use `QRPlanDecoder.java` (provided in your FTC project) to decode QR → JSON → commands.
+
+## Contributing
+
+If you'd like to contribute, read `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` for guidelines. Create a branch `feature/<name>` or `fix/<name>` and open a pull request. Keep PRs focused and include reproduction steps.
+
+## Building an Offline Bundle (Tournament)
+
+Quick steps to produce a single-folder or single-file bundle suitable for tournament use (works offline on phones/desktops):
+
+1. Download required libs into the project root (next to `index.html`) as shown above.
+2. Run `build_single_file.ps1` to create `bundle.html` which inlines scripts and styles.
+
+See `build_single_file.ps1` for details.
+
+## License
+
+This repository is released under the MIT License — see `LICENSE`.
+
+## Contact
+
+Open an issue if you have questions, feature requests, or want help integrating with robot code.
 Offline / Tournament build
 =========================
 

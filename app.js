@@ -46,17 +46,16 @@ function safeLocalStorageRemove(key) {
 }
 
 // Prevent pinch zoom on iOS
-document.addEventListener('gesturestart', function(e) {
+function _maybePreventGesture(e) {
+  // Allow gestures when QR fullscreen view is open so users can pinch/zoom the QR.
+  const qrView = document.getElementById('qr-fullscreen-view');
+  if (qrView && qrView.style && qrView.style.display === 'flex') return;
   e.preventDefault();
-});
+}
 
-document.addEventListener('gesturechange', function(e) {
-  e.preventDefault();
-});
-
-document.addEventListener('gestureend', function(e) {
-  e.preventDefault();
-});
+document.addEventListener('gesturestart', _maybePreventGesture);
+document.addEventListener('gesturechange', _maybePreventGesture);
+document.addEventListener('gestureend', _maybePreventGesture);
 
 // ============================================================================
 // PEDRO PATHING CONSTANTS
@@ -170,9 +169,16 @@ function optimizeBlocklyForMobile() {
     workspace.options.horizontalLayout = false;
     workspace.options.toolboxPosition = 'start';
     
-    if (window.innerWidth <= 768) {
-      workspace.setScale(0.8);
-    }
+    // Dynamic scale based on available width for better readability on phones
+    const w = window.innerWidth;
+    let scale = 0.9;
+    if (w <= 420) scale = 0.72;
+    else if (w <= 768) scale = 0.82;
+    else scale = 0.9;
+    try { workspace.setScale(scale); } catch (e) { }
+
+    // Add a mobile class to body for CSS tweaks
+    if (w <= 768) document.body.classList.add('mobile'); else document.body.classList.remove('mobile');
   }
 }
 
@@ -210,6 +216,10 @@ let totalPathTime = 0;
 let pathSegments = [];
 let partnerPathSegments = [];
 let partnerTotalPathTime = 0;
+// Scroll timer state
+let scrollTimerRaf = null;
+let scrollTimerRunning = false;
+const SCROLL_TIMER_PX_PER_SEC = 60; // pixels per second for timeline scale
 
 canvas.addEventListener('touchstart', (e) => {
   e.preventDefault();
@@ -233,8 +243,16 @@ function resizeCanvas() {
     
     if (size > 0 && size !== FIELD_SIZE) {
       FIELD_SIZE = size;
-      canvas.width = size;
-      canvas.height = size;
+      // Improve rendering sharpness on high-DPI devices
+      const dpr = window.devicePixelRatio || 1;
+      canvas.style.width = size + 'px';
+      canvas.style.height = size + 'px';
+      canvas.width = Math.max(1, Math.floor(size * dpr));
+      canvas.height = Math.max(1, Math.floor(size * dpr));
+      try {
+        // map drawing coordinates to CSS pixels
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      } catch (e) { }
       renderField();
     }
   }
@@ -544,6 +562,7 @@ function calculatePathSegments() {
   pathSegments = segments;
   totalPathTime = cumulativeTime;
   updateTimerDisplay();
+  updateScrollTimerLayout();
 }
 
 function calculatePartnerPathSegments() {
@@ -1230,11 +1249,13 @@ function startAnimation() {
   animationStartTime = Date.now();
   document.getElementById('playBtn').textContent = '⏸️ Pause';
   animate();
+  startScrollTimer();
 }
 
 function stopAnimation() {
   animationRunning = false;
   document.getElementById('playBtn').textContent = '▶️ Play';
+  stopScrollTimer();
 }
 
 function animate() {
@@ -1242,6 +1263,93 @@ function animate() {
   
   renderField();
   requestAnimationFrame(animate);
+}
+
+// ----------------------
+// Scroll timer (timeline)
+// ----------------------
+function ensureScrollTimerElement() {
+  let container = document.getElementById('scroll-timer-container');
+  if (container) return container;
+
+  const rightPanel = document.getElementById('right-panel') || document.body;
+  container = document.createElement('div');
+  container.id = 'scroll-timer-container';
+  container.innerHTML = `
+    <div id="scroll-timer-track" aria-hidden="true">
+      <div id="scroll-timer-playhead" class="scroll-timer-indicator"></div>
+    </div>
+  `;
+
+  // Insert above animation controls if available
+  const animationControls = document.getElementById('animation-controls');
+  if (animationControls && animationControls.parentNode) {
+    animationControls.parentNode.insertBefore(container, animationControls);
+  } else {
+    rightPanel.appendChild(container);
+  }
+
+  return container;
+}
+
+function updateScrollTimerLayout() {
+  const container = ensureScrollTimerElement();
+  const track = container.querySelector('#scroll-timer-track');
+  if (!track) return;
+
+  if (!totalPathTime || totalPathTime <= 0) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = '';
+  // Keep the track confined to the container width (no oversized track)
+  track.style.width = '100%';
+  // position playhead at start
+  const playhead = track.querySelector('#scroll-timer-playhead');
+  if (playhead) playhead.style.left = '0px';
+}
+
+function startScrollTimer() {
+  if (scrollTimerRunning) return;
+  const container = ensureScrollTimerElement();
+  const track = container.querySelector('#scroll-timer-track');
+  if (!track || !totalPathTime || totalPathTime <= 0) return;
+
+  scrollTimerRunning = true;
+
+  function step() {
+    if (!scrollTimerRunning) return;
+    const elapsed = (Date.now() - animationStartTime) / 1000;
+    const clamped = Math.max(0, Math.min(elapsed, totalPathTime));
+    const pct = totalPathTime > 0 ? (clamped / totalPathTime) : 0;
+    const trackWidth = track.clientWidth;
+    const x = pct * trackWidth;
+
+    const playhead = track.querySelector('#scroll-timer-playhead');
+    if (playhead) playhead.style.left = x + 'px';
+
+    // no auto-centering/scrolling: track is fixed to container width
+
+    if (elapsed >= totalPathTime) {
+      // stop auto-scrolling but leave playhead at end
+      scrollTimerRunning = false;
+      scrollTimerRaf = null;
+      return;
+    }
+
+    scrollTimerRaf = requestAnimationFrame(step);
+  }
+
+  scrollTimerRaf = requestAnimationFrame(step);
+}
+
+function stopScrollTimer() {
+  scrollTimerRunning = false;
+  if (scrollTimerRaf) {
+    cancelAnimationFrame(scrollTimerRaf);
+    scrollTimerRaf = null;
+  }
 }
 
 // ============================================================================
@@ -1388,6 +1496,27 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     }
     qrWrapper.appendChild(img);
   }
+
+  // Allow tapping background to close QR on mobile
+  qrView.onclick = (ev) => {
+    if (ev.target === qrView) {
+      qrView.style.display = 'none';
+      rightPanel.style.display = '';
+      leftPanel.style.display = '';
+      document.removeEventListener('keydown', _qrKeyListener);
+    }
+  };
+
+  // Allow ESC to close
+  function _qrKeyListener(e) {
+    if (e.key === 'Escape') {
+      qrView.style.display = 'none';
+      rightPanel.style.display = '';
+      leftPanel.style.display = '';
+      document.removeEventListener('keydown', _qrKeyListener);
+    }
+  }
+  document.addEventListener('keydown', _qrKeyListener);
 
   // Add back button at bottom
   const backBtn = document.createElement('button');
