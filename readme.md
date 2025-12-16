@@ -23,7 +23,9 @@ python -m http.server 5500
 
 See `build_single_file.ps1` for details.
 
-Good luck at your tournament!# FTC QR Builder
+Good luck at your tournament!
+
+# FTC QR Builder
 
 Offline Progressive Web App to visually create autonomous command sequences for FTC robots.
 It generates a compressed QR code that can be scanned by a Limelight camera and decoded by the robot.
