@@ -160,7 +160,7 @@ Blockly.JavaScript['deposit'] = function(block){
   return JSON.stringify({cmd:'deposit', locale, sorted, txo, tyo});
 };
 
-// DELAY (milliseconds in output to match decoder expecting "seconds" field in ms)
+// DELAY (milliseconds output)
 Blockly.Blocks['delay_s'] = {
   init: function(){
     this.appendDummyInput()
@@ -189,6 +189,53 @@ Blockly.Blocks['release_gate'] = {
 };
 Blockly.JavaScript['release_gate'] = function(block){
   return JSON.stringify({cmd:'release'});
+};
+
+// CHASE ARTIFACTS
+Blockly.Blocks['chase'] = {
+  init: function(){
+    this.appendDummyInput()
+      .appendField("Chase")
+      .appendField(new Blockly.FieldNumber(1), "cycles")
+      .appendField("cycles");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour("#277da1");
+    this.setTooltip("Chase artifacts for a number of cycles)");
+  }
+};
+Blockly.JavaScript['chase'] = function(block){
+  const cycles = Number(block.getFieldValue('cycles'))||0;
+  return JSON.stringify({cmd:'chase', cycles});
+};    
+
+// PARK BLOCK
+Blockly.Blocks['park'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Park Axial:")
+      .appendField(new Blockly.FieldDropdown(
+        [["Center","center"],["Front","front"], ["Back","back"]]
+      ), "Axial")
+      .appendField("Lateral:")
+      .appendField(new Blockly.FieldDropdown(
+        [["Center","center"],["Left","left"], ["Right","right"]]
+      ), "Lateral")
+      .appendField("Gate")
+      .appendField(new Blockly.FieldDropdown(
+        [["false", "false"],["true", "true"]]
+      ), "Gate");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour("#41006c");
+    this.setTooltip("Park with axial and lateral alignment");
+  }
+};
+Blockly.JavaScript['park'] = function(block){
+  const axial = block.getFieldValue('Axial');
+  const lateral = block.getFieldValue('Lateral');
+  const gate = block.getFieldValue('Gate') === 'true';
+  return JSON.stringify({cmd:'park', axial, lateral, gate});
 };
 
 // Debug: log which generators are present after definitions

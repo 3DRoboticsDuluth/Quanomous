@@ -63,8 +63,8 @@ document.addEventListener('gestureend', function(e) {
 // ============================================================================
 
 const PEDRO_CONSTANTS = {
-  xMovementVelocity: 30,
-  yMovementVelocity: 30,
+  xMovementVelocity: 73.62513937161664,
+  yMovementVelocity: 56.98721866157111,
   turnVelocity: 90,
   intakeTime: 1.5,
   depositTime: 2.0,
@@ -351,6 +351,28 @@ const NAMED_POSES = {
     return applyOffsets(
       0 * TILE_WIDTH,
       getAllianceSign() * -2 * TILE_WIDTH,
+      heading,
+      Axial.CENTER,
+      Lateral.CENTER
+    );
+  },
+  chase: () => {
+    // getChasePose() 
+    const heading = getAllianceSign() * -45 * Math.PI / 180;
+    return applyOffsets(
+      0 * TILE_WIDTH,
+      getAllianceSign() * -1.5 * TILE_WIDTH,
+      heading,
+      Axial.CENTER,
+      Lateral.CENTER
+    );
+  },
+  park: () => {
+    // getParkPose()
+    const heading = getAllianceSign() * -90 * Math.PI / 180;
+    return applyOffsets(
+      currentSide === 'NORTH' ? TILE_WIDTH : -2.5 * TILE_WIDTH,
+      getAllianceSign() * -TILE_WIDTH,
       heading,
       Axial.CENTER,
       Lateral.CENTER
@@ -799,6 +821,57 @@ function extractPathFromBlocks(startBlockType = 'start') {
         type: 'action',
         label: 'Release Gate'
       };
+    }
+
+    else if (current.type === 'chase') {
+      const savedAlliance = currentAlliance;
+      if (startBlockType === 'partner_start') {
+        currentAlliance = partnerAlliance;
+      }
+      const pose = NAMED_POSES.chase();
+      currentAlliance = savedAlliance;
+
+      waypoint = {
+        x: pose.x,
+        y: pose.y,
+        heading: pose.heading, 
+        type: 'action', 
+        label: 'Chase'
+      }
+    }
+
+    else if (current.type === 'park') {
+      const savedAlliance = currentAlliance;
+      if (startBlockType === 'partner_start') {
+        currentAlliance = partnerAlliance;
+      }
+
+    const gateEnabled = current.getFieldValue('Gate') === 'true';
+
+      if (gateEnabled) {
+        const pose = NAMED_POSES.gate();
+        currentAlliance = savedAlliance;
+
+        waypoint = {
+          x: pose.x, 
+          y: pose.y,
+          heading: pose.heading, 
+          type: 'action', 
+          label: 'Park at Gate'
+        };
+      }
+      else {
+        const pose = NAMED_POSES.park();
+        currentAlliance = savedAlliance;
+
+        waypoint = {
+          x: pose.x, 
+          y: pose.y,
+          heading: pose.heading, 
+          type: 'action', 
+          label: 'Park'
+        }
+      }
     }
     
     else if (current.type === 'delay_s') {
