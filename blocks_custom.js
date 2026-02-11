@@ -127,6 +127,19 @@ Blockly.JavaScript['intake_human'] = function(block){
   return JSON.stringify({cmd:'intake', spike:0});
 };
 
+// GATE INTAKE (drop gate to get artifacts off of the classifier)
+Blockly.Blocks['intake_gate'] = {
+  init: function(){
+    this.appendDummyInput().appendField("Intake gate");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour("#577590");
+  }
+};
+Blockly.JavaScript['intake_gate'] = function(block){
+  return JSON.stringify({cmd:'intake_gate'});
+};
+
 // DEPOSIT (unified block with locale dropdown and optional offsets)
 Blockly.Blocks['deposit'] = {
   init: function(){
@@ -241,7 +254,7 @@ Blockly.JavaScript['park'] = function(block){
 // Debug: log which generators are present after definitions
 if (typeof console !== 'undefined' && Blockly && Blockly.JavaScript) {
   try {
-    const names = ['start','drive_to','intake_row','intake_human','delay_s','deposit','release_gate'];
+    const names = ['start','drive_to','intake_row','intake_human','delay_s','deposit','release_gate', 'chase', 'park', 'gate_intake'];
     names.forEach(n => console.info('blocks_custom: generator present ->', n, typeof Blockly.JavaScript[n] === 'function'));
   } catch (e) { /* ignore */ }
 }

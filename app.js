@@ -69,6 +69,7 @@ const PEDRO_CONSTANTS = {
   intakeTime: 1.5,
   depositTime: 2.0,
   releaseGateTime: 1.0,
+  intakeGateTime: 1.0,
   robotLength: 14,
   robotWidth: 14
 };
@@ -316,6 +317,17 @@ const NAMED_POSES = {
       Lateral.CENTER
     );
   },
+  gate_intake: () => {
+    // getGateIntakePose() - position to intake from gate
+    const heading = getAllianceSign() * -135 * Math.PI / 180;
+    return applyOffsets(
+      0.65 * TILE_WIDTH,
+      getAllianceSign() * -2.75 * TILE_WIDTH,
+      heading,
+      Axial.CENTER,
+      Lateral.CENTER
+    );
+  },
   loading_zone: () => {
     // getSpike0() - loading zone position
     const heading = getAllianceSign() * -90 * Math.PI / 180;
@@ -458,6 +470,8 @@ function calculatePathSegments() {
       actionTime = PEDRO_CONSTANTS.releaseGateTime;
     } else if (wp.type === 'delay') {
       actionTime = wp.delayTime || 0;
+    } else if (wp.type === 'intake_gate') {
+      actionTime = PEDRO_CONSTANTS.intakeGateTime;
     }
     
     if (actionTime > 0) {
@@ -513,6 +527,8 @@ function calculatePartnerPathSegments() {
       actionTime = PEDRO_CONSTANTS.releaseGateTime;
     } else if (wp.type === 'delay') {
       actionTime = wp.delayTime || 0;
+    } else if (wp.type === 'intake_gate') {
+      actionTime = PEDRO_CONSTANTS.intakeGateTime;
     }
     
     if (actionTime > 0) {
@@ -809,6 +825,23 @@ function extractPathFromBlocks(startBlockType = 'start') {
         label: 'Human Intake'
       };
     }
+
+    else if (current.type === 'intake_gate') {
+      const savedAlliance = currentAlliance;
+      if (startBlockType === 'partner_start') {
+        currentAlliance = partnerAlliance;
+      }
+      const pose = NAMED_POSES.gate_intake();
+      currentAlliance = savedAlliance;
+
+      waypoint = {
+        x: pose.x,
+        y: pose.y,
+        heading: pose.heading,
+        type: 'gate_intake',
+        label: 'Gate Intake'
+      };
+    }
     
     else if (current.type === 'release_gate') {
       const savedAlliance = currentAlliance;
@@ -940,6 +973,7 @@ function updateWaypointsList() {
     if (wp.type === 'intake') actionTime = PEDRO_CONSTANTS.intakeTime;
     else if (wp.type === 'deposit') actionTime = PEDRO_CONSTANTS.depositTime;
     else if (wp.type === 'action') actionTime = PEDRO_CONSTANTS.releaseGateTime;
+    else if (wp.type === 'gate_intake') actionTime = PEDRO_CONSTANTS.intakeGateTime;
     
     cumulativeTime += actionTime;
     
