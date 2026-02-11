@@ -278,6 +278,10 @@ function getAllianceSign() {
   return currentAlliance === 'RED' ? -1 : 1;
 }
 
+function getSideSign() {
+  return currentSide === 'NORTH' ? 1 : -1;
+}
+
 const NAMED_POSES = {
   spike_near: () => {
     // getSpike1() - nearest spike mark
@@ -369,10 +373,10 @@ const NAMED_POSES = {
   },
   park: () => {
     // getParkPose()
-    const heading = getAllianceSign() * -90 * Math.PI / 180;
+    const heading = (90 + (getSideSign() * 90)) * Math.PI / 180;
     return applyOffsets(
-      currentSide === 'NORTH' ? TILE_WIDTH : -2.5 * TILE_WIDTH,
-      getAllianceSign() * -TILE_WIDTH,
+      currentSide === 'NORTH' ? TILE_WIDTH * 2.6 : -2.6 * TILE_WIDTH,
+      getAllianceSign() * -1.5 * TILE_WIDTH,
       heading,
       Axial.CENTER,
       Lateral.CENTER
