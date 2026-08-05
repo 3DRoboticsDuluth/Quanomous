@@ -11,9 +11,7 @@ if (Blockly && Blockly.Workspace && typeof Blockly.Workspace.prototype.getAllVar
   } catch (e) { }
 }
 
-// ============================================================================
 // MOBILE OPTIMIZATIONS
-// ============================================================================
 
 // Better localStorage error handling for mobile browsers
 function safeLocalStorageSet(key, value) {
@@ -58,9 +56,10 @@ document.addEventListener('gestureend', function(e) {
   e.preventDefault();
 });
 
-// ============================================================================
 // PEDRO PATHING CONSTANTS
-// ============================================================================
+/* TODO: These constants should change based on your actual tuning values. I have no idea how well they work. 
+      They could be a boon, they could be an anchor
+*/
 
 const PEDRO_CONSTANTS = {
   xMovementVelocity: 73.62513937161664,
@@ -74,9 +73,8 @@ const PEDRO_CONSTANTS = {
   robotWidth: 14
 };
 
-// ============================================================================
 // AXIAL AND LATERAL OFFSET SUPPORT
-// ============================================================================
+// Shouldn't need to change from season to season unless axial and lateral values change
 
 const Axial = {
   FRONT: 1,
@@ -115,9 +113,7 @@ function applyOffsets(x, y, heading, axial = Axial.CENTER, lateral = Lateral.CEN
   return { x: newX, y: newY, heading };
 }
 
-// ============================================================================
 // BLOCKLY WORKSPACE SETUP
-// ============================================================================
 
 const myTheme = Blockly.Theme.defineTheme('customTheme', {
   base: Blockly.Themes.Classic,
@@ -160,9 +156,8 @@ function optimizeBlocklyForMobile() {
 
 optimizeBlocklyForMobile();
 
-// ============================================================================
 // CANVAS SETUP
-// ============================================================================
+// Sets default side and alliance along with setting field dimensions, loading images, and setting up event listeners for touch events
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -247,9 +242,8 @@ robotImage.src = 'robot.png';
 // Don't try to load partner robot image - just use fallback box
 partnerRobotImageLoaded = false;
 
-// ============================================================================
 // START POSITIONS AND NAMED POSES
-// ============================================================================
+// TODO: These should be updated based on your actual starting positions
 
 function getStartPosition(alliance, side) {
   const allianceSign = alliance === 'RED' ? -1 : 1;
@@ -282,6 +276,9 @@ function getAllianceSign() {
 function getSideSign() {
   return currentSide === 'NORTH' ? 1 : -1;
 }
+
+// TODO: This will need to be updated whenever you want to add a new pose on the field
+// This defines each poses' position and heading on the field, basically ripped from NavSubsystem
 
 const NAMED_POSES = {
   spike_near: () => {
@@ -414,9 +411,8 @@ function pedroToCanvas(x, y) {
   };
 }
 
-// ============================================================================
 // PATH TIMING CALCULATIONS
-// ============================================================================
+// I honestly can't remember how you would have to change it good luck
 
 function calculateMoveTime(from, to) {
   const dx = to.x - from.x;
@@ -628,9 +624,7 @@ function getPartnerRobotPoseAtTime(time) {
   return { ...partnerStartPos };
 }
 
-// ============================================================================
 // BLOCK MANAGEMENT
-// ============================================================================
 
 function ensureStartBlock() {
   if (!workspace.getAllBlocks(false).some(b => b.type === 'start')) {
@@ -944,9 +938,7 @@ function extractPathFromBlocks(startBlockType = 'start') {
   return path;
 }
 
-// ============================================================================
 // UI UPDATES
-// ============================================================================
 
 function updateWaypointsList() {
   const list = document.getElementById('waypoints-list');
@@ -998,9 +990,7 @@ function updateTimerDisplay() {
   }
 }
 
-// ============================================================================
 // FIELD RENDERING
-// ============================================================================
 
 function renderField() {
   ctx.clearRect(0, 0, FIELD_SIZE, FIELD_SIZE);
@@ -1221,9 +1211,7 @@ function renderField() {
   }
 }
 
-// ============================================================================
 // ANIMATION CONTROLS
-// ============================================================================
 
 document.getElementById('playBtn').addEventListener('click', () => {
   if (pathSegments.length === 0) return;
@@ -1259,9 +1247,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-// ============================================================================
 // UTILITY FUNCTIONS
-// ============================================================================
 
 function loadScript(url) {
   return new Promise((resolve, reject) => {
@@ -1292,9 +1278,7 @@ async function ensureKjua() {
   throw new Error('kjua library could not be loaded from any CDN');
 }
 
-// ============================================================================
 // QR GENERATION
-// ============================================================================
 
 document.getElementById('generateBtn').addEventListener('click', async () => {
   const plan = generatePlanJSON();
@@ -1434,9 +1418,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   safeLocalStorageSet('last_qr_payload', b64);
 });
 
-// ============================================================================
 // BUNDLE CREATION
-// ============================================================================
 
 document.getElementById('bundleBtn').addEventListener('click', async () => {
   const info = document.getElementById('info');
@@ -1500,9 +1482,7 @@ document.getElementById('bundleBtn').addEventListener('click', async () => {
   info.textContent = 'Bundle downloaded!';
 });
 
-// ============================================================================
 // CLEAR WORKSPACE
-// ============================================================================
 
 document.getElementById('clearBtn').addEventListener('click', () => {
   workspace.getAllBlocks(false).forEach(b => b.dispose(true));
@@ -1514,9 +1494,7 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   updateVisualization();
 });
 
-// ============================================================================
 // PLAN JSON GENERATION
-// ============================================================================
 
 function generatePlanJSON() {
   const startBlock = workspace.getTopBlocks(true).find(b => b.type === 'start');
@@ -1569,9 +1547,7 @@ function compressAndEncode(plan) {
   return btoa(binary);
 }
 
-// ============================================================================
 // WINDOW RESIZE & ORIENTATION HANDLERS
-// ============================================================================
 
 let resizeTimeout;
 window.addEventListener('resize', () => {
@@ -1595,9 +1571,7 @@ window.addEventListener('orientationchange', () => {
   }, 100);
 });
 
-// ============================================================================
 // TOUCH FEEDBACK FOR BUTTONS
-// ============================================================================
 
 function addTouchFeedback() {
   const buttons = document.querySelectorAll('button');
@@ -1614,17 +1588,13 @@ function addTouchFeedback() {
 
 addTouchFeedback();
 
-// ============================================================================
 // SERVICE WORKER REGISTRATION
-// ============================================================================
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   try { navigator.serviceWorker.register('sw.js'); } catch (e) { }
 }
 
-// ============================================================================
 // INITIAL SETUP
-// ============================================================================
 
 ensureStartBlock();
 updateVisualization();

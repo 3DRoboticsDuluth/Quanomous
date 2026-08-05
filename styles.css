@@ -1,3 +1,10 @@
+/* This file should only need to be updated if
+
+  The HTML changed -- new elements were added; the CSS needs to match
+  New features were added -- new parts of the app need their own styles
+  The layout itself has problems -- Things don't look or work correctly on a device or screen size
+*/
+
 body {
   font-family: "Segoe UI", sans-serif;
   margin: 0;

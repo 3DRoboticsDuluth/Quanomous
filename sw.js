@@ -1,3 +1,6 @@
+// Service Worker for caching files for offline use, if you add a new file then you need to update this accordingly.
+// This file shouldn't need to be updated for each season.
+
 const CACHE_NAME = 'ftc-qr-cache-v1';
 const FILES_TO_CACHE = [
   './',

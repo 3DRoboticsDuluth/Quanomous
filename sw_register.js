@@ -1,3 +1,5 @@
+//This shouldn't need to be updated for each season.
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')

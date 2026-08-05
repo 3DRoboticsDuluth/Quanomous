@@ -1,3 +1,8 @@
+// You will need each of the blocks to have a javascript function that returns a JSON string for the command.
+// The start block can most likely stay the same throughout seasons, but the other blocks will need to be updated to ensure that they work in the new season.
+// The blocks are defined in this file using the Blockly.Blocks object, and the javascript functions are defined using the Blockly.JavaScript object.
+// Each block has a unique name, and each javascript function has a unique name that corresponds to that block name.
+
 // START BLOCK
 // NOTE: The generators in this file return JSON-encoded strings for each command.
 // The decoding implementation (Android/FTC) expects an outer JSON array of these
@@ -60,7 +65,7 @@ Blockly.JavaScript['start'] = function(block) {
   return JSON.stringify(plan);
 };
 
-// DRIVE TO (tile-based only)
+// DRIVE TO (tile-based)
 Blockly.Blocks['drive_to'] = {
   init: function() {
     this.appendDummyInput()
@@ -127,7 +132,7 @@ Blockly.JavaScript['intake_human'] = function(block){
   return JSON.stringify({cmd:'intake', spike:0});
 };
 
-// GATE INTAKE (drop gate to get artifacts off of the classifier)
+// GATE INTAKE (open gate to get artifacts off of the classifier)
 Blockly.Blocks['intake_gate'] = {
   init: function(){
     this.appendDummyInput().appendField("Intake gate");

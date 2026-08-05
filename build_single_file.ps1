@@ -1,5 +1,7 @@
 # Inline local scripts/styles into a single bundle.html for offline use
 # Run this from the project directory containing index.html
+# I don't think this should have to change from season to season, but I really don't remember this file at all...
+# I also have no idea if the errors have always been here or if that is a new feature I got no idea
 
 $index = Get-Content -Raw -Path "index.html"
 $out = $index
