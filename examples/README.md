@@ -2,6 +2,12 @@
 
 These independent Android modules consume the locally published AAR by Maven coordinates. They do not use `project(':library')` or copied library source. The Java example applies no Kotlin plugin.
 
+Example source and tests use the standard FTC `org.firstinspires.ftc.teamcode`
+package and matching folders. Copy example code into that package in your own
+TeamCode module (or adjust the package if your team has customized it). The
+library remains under `com.threedrd.quanomous`; keep those imports unchanged.
+The two examples are separate alternatives, not modules to install together.
+
 Publish the library first, then run from the repository root:
 
 ```powershell
@@ -10,8 +16,8 @@ Publish the library first, then run from the repository root:
 
 Use `./gradlew` on macOS/Linux. Set `ANDROID_HOME` for both builds, or give each build its own untracked `local.properties`.
 
-- [Java](java/src/main/java/com/threedrd/examples/JavaExample.java) registers `CommandFactory<Runnable>` handlers.
-- [Kotlin](kotlin/src/main/java/com/threedrd/examples/KotlinExample.kt) uses the existing map of JSON handlers returning `() -> Unit`.
+- [Java](java/src/main/java/org/firstinspires/ftc/teamcode/JavaExample.java) registers `CommandFactory<Runnable>` handlers.
+- [Kotlin](kotlin/src/main/java/org/firstinspires/ftc/teamcode/KotlinExample.kt) uses the existing map of JSON handlers returning `() -> Unit`.
 
 Both define a custom `signal` instruction. Tests confirm compilation does not execute actions, then run them and verify order. This demonstrates that the library does not require the BioBuzz or Decode contract.
 

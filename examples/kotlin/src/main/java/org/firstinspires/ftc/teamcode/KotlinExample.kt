@@ -1,4 +1,4 @@
-package com.threedrd.examples
+package org.firstinspires.ftc.teamcode
 
 import com.threedrd.quanomous.Quanomous
 import com.threedrd.quanomous.QuanomousCompiler
