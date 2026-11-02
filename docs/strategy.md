@@ -28,7 +28,7 @@ The initial builder template follows the local BioBuzz adapter: delay, chase, in
 
 Use the organization-owned `com.threedrd` convention: Quanomous source packages
 and Android namespace are `com.threedrd.quanomous`, and Maven coordinates are
-`com.threedrd:quanomous`. The existing robot repositories are outside this migration.
+`io.github.3droboticsduluth:quanomous`. The existing robot repositories are outside this migration.
 
 Keep implementation in Kotlin. Publish an Android AAR with the existing minimum Android API 24 and Java 8 bytecode target. This preserves Android Base64 support without adding an FTC SDK or command framework dependency.
 

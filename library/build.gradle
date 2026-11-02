@@ -6,7 +6,7 @@ plugins {
     id 'com.vanniktech.maven.publish.base' version '0.37.0'
 }
 
-group = 'com.threedrd'
+group = 'io.github.3droboticsduluth'
 version = providers.gradleProperty('releaseVersion').getOrElse('0.1.0-SNAPSHOT')
 
 android {

@@ -5,13 +5,15 @@ import io
 import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[1]
-repo = root / 'build/repository/com/threedrd/quanomous'
+repo = root / 'build/repository/io/github/3droboticsduluth/quanomous'
 versions = list(repo.glob('*/'))
 assert versions, 'Missing local Maven publication'
 version = max(versions, key=lambda p: p.stat().st_mtime)
 pom = max(version.glob('*.pom'), key=lambda p: p.stat().st_mtime)
 ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
 model = ET.parse(pom).getroot()
+assert model.findtext('m:groupId', namespaces=ns) == 'io.github.3droboticsduluth'
+assert model.findtext('m:artifactId', namespaces=ns) == 'quanomous'
 for field in ['groupId', 'artifactId', 'version', 'name', 'description', 'url',
               'licenses/license/name', 'developers/developer/name',
               'scm/connection', 'scm/developerConnection']:

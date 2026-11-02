@@ -7,7 +7,7 @@ The three library classes and original tests were copied from the local BioBuzz 
 Extraction adds independent Android/Maven configuration, timestamp filenames, a Java handler interface and related tests. The shared configuration, dynamic Gson map, direct writes and last-routine hash are retained.
 
 Consolidated sources and tests use `com.threedrd.quanomous` rather than the source
-module's FIRST-prefixed package. Maven coordinates use `com.threedrd:quanomous`.
+module's FIRST-prefixed package. Maven coordinates use `io.github.3droboticsduluth:quanomous`.
 
 The BioBuzz template follows the uncommitted `TeamCode/.../subsystems/Quanomous.kt` and `docs/robot/autonomous-strategy.md` on local `devildogs/main`, observed November 1, 2026. It is a working template contract, not a physically validated routine implementation. That checkout was not changed.
 

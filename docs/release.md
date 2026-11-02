@@ -32,17 +32,22 @@ run, if required checks are desired. No rule changes have been made.
 
 ## Maven Central namespace: prerequisite still open
 
-The intended coordinates remain com.threedrd:quanomous. Sonatype verifies the
-exact reverse-DNS namespace: com.threedrd requires control of threedrd.com and a
-TXT record containing the Central Portal-issued verification key. Control of
-3droboticsduluth.com does not satisfy that verification. The account's namespace
-status and control of threedrd.com have NOT been established by this work.
+The chosen coordinates are io.github.3droboticsduluth:quanomous. Source packages
+and the Android namespace remain com.threedrd.quanomous. DNS verification is not
+needed for this GitHub-based namespace.
 
-Before release, an organization maintainer must register/verify that namespace
-in Central Portal, or agree a Maven group based on an organization-controlled
-domain/verified code-hosting namespace. Source package com.threedrd.quanomous
-can remain unchanged if the Maven group changes. Do not publish with a guessed
-or unauthorized namespace. No account, DNS or namespace changes were made.
+In Central Portal, open View Namespaces, add io.github.3droboticsduluth and follow
+the offered verification challenge. The code-host verification process normally
+requires a temporary public repository under 3DRoboticsDuluth whose name is the
+exact Portal-issued verification key. After successful verification, delete that
+challenge repository. Do not create a guessed challenge name.
+
+GitHub sign-in automatically provisions only the personal user's namespace, not
+an organization namespace. If Portal does not offer organization verification,
+contact Central Support with the requested namespace, organization/repository
+links and evidence of your organization permissions. The organization-specific
+flow and verified status must be confirmed in the actual publisher account.
+No namespace has yet been marked verified by this preparation.
 
 Sources: [namespace registration](https://central.sonatype.org/register/namespace/),
 [publication requirements](https://central.sonatype.org/publish/requirements/).
