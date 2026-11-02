@@ -1,89 +1,120 @@
-# Plain iterative OpMode / state-machine integration
+# BioBuzz in a plain iterative OpMode
 
-Use this alternative when your team does not use a command framework. Copy
-`JavaExample.java` and `JavaStateMachine.java` into your TeamCode package and
-install the library as described in [installation](library.md). The runner is
-example code, not a scheduler built into Quanomous.
+This example uses the same six BioBuzz instructions and the exact
+[shared nine-step routine](../examples/routines/biobuzz-route.json) loaded by the
+builder's **Load BioBuzz example** button. No command framework is required.
+The wait uses real elapsed time. The five hardware action types are explicitly
+simulated: telemetry shows their parameters and a fresh press of gamepad A marks
+the active action complete. Nothing moves hardware.
 
-The important difference from the reporting-only dry run is completion:
-`start()` initializes an action once, `update()` does a little work on each
-OpMode loop and returns true when done, and `stop()` releases that action's
-outputs. The runner advances only after completion. Do not sleep, busy-wait or
-run an entire drive operation inside any of these methods.
+## Copy and run
 
-Here is a complete FTC OpMode for a timed wait followed by a telemetry message.
-Create `QuanomousStateMachineOpMode.java` in the same TeamCode package. This uses
-the FTC SDK supplied by your robot project; the independent consumer build tests
-the runner, not the SDK-specific OpMode below.
+Install the library following [installation](library.md). Copy these files into
+`TeamCode/src/main/java/org/firstinspires/ftc/teamcode/`:
+
+- `JavaExample.java`: the same BioBuzz JSON-to-factory adapter used elsewhere.
+- `JavaStateMachine.java`: the loop-driven sequence runner.
+- `BioBuzzStateMachineDemo.java`: all six factories, with interactive hardware placeholders.
+
+Find them in [the Java source folder](../examples/java/src/main/java/org/firstinspires/ftc/teamcode/).
+Copy `examples/routines/biobuzz-route.json` unchanged into your robot project's
+`TeamCode/src/main/assets/biobuzz-route.json` (create the assets folder if needed).
+This packages the shared routine in the robot app; it is not a saved scan in
+Quanomous storage. The builder can load the same file through its example button.
+
+Create `QuanomousStateMachineOpMode.java` in the same TeamCode package:
 
 ```java
 package org.firstinspires.ftc.teamcode;
 
+import android.content.res.AssetManager;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.threedrd.quanomous.CommandFactory;
-import com.threedrd.quanomous.Quanomous;
-import com.threedrd.quanomous.QuanomousCompiler;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-@Autonomous(name = "Quanomous state machine demo")
+@Autonomous(name = "Quanomous BioBuzz state machine demo")
 public class QuanomousStateMachineOpMode extends OpMode {
     private JavaStateMachine sequence;
+    private String current = "Ready";
+    private String error;
 
     @Override public void init() {
-        Map<String, CommandFactory<JavaStateMachine.Action>> handlers = new HashMap<>();
-        handlers.put("delay", step -> JavaStateMachine.delay(step.get("seconds").getAsDouble()));
-        handlers.put("report", step -> JavaStateMachine.once(() ->
-            telemetry.addLine(step.get("text").getAsString())));
-        QuanomousCompiler<JavaStateMachine.Action> compiler =
-            QuanomousCompiler.fromHandlers(handlers);
-        String json = "[{\"cmd\":\"delay\",\"seconds\":0.4},"
-            + "{\"cmd\":\"report\",\"text\":\"Wait finished\"}]";
-        sequence = new JavaStateMachine(compiler.compile(Quanomous.INSTANCE.parse(json)));
-        telemetry.addLine("Ready; actions begin after Start");
+        try {
+            JavaExample<JavaStateMachine.Action> adapter = new JavaExample<>(
+                new BioBuzzStateMachineDemo(message -> current = message, () -> gamepad1.a));
+            String json = readAsset(hardwareMap.appContext.getAssets(), "biobuzz-route.json");
+            sequence = new JavaStateMachine(adapter.compile(json));
+            telemetry.addLine("Ready: Start, then press A for each simulated action");
+        } catch (IOException | RuntimeException failure) {
+            error = "Cannot load BioBuzz routine: " + failure.getMessage();
+            telemetry.addLine(error);
+        }
     }
 
     @Override public void loop() {
-        sequence.loop();
-        telemetry.addData("Sequence finished", sequence.isFinished());
+        if (sequence == null) {
+            telemetry.addLine(error);
+        } else {
+            sequence.loop();
+            telemetry.addData("Action", current);
+            telemetry.addData("Finished", sequence.isFinished());
+        }
         telemetry.update();
     }
 
     @Override public void stop() {
         if (sequence != null) sequence.stop();
-        // Also apply your team's normal robot-wide stop of all outputs.
+        // A real robot also applies its normal robot-wide output shutdown here.
+    }
+
+    private static String readAsset(AssetManager assets, String name) throws IOException {
+        try (InputStream input = assets.open(name);
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+            return output.toString("UTF-8");
+        }
     }
 }
 ```
 
-`report` is a custom demonstration instruction; the BioBuzz builder does not
-emit it. This small routine deliberately shows that the library accepts a team's
-own instruction map. It waits for real elapsed time without blocking the loop.
-The reporting-only `JavaDryRun` instead reports a delay immediately.
+After Init, nothing has executed. Press Start: the first step waits 0.4 seconds
+without blocking the loop, then the drive target appears. Release and press A to
+complete it. Repeat for deposit, intake, deposit, intake, deposit, chase and park.
+Holding A never skips subsequent steps. After park completes, Finished stays true.
+Stop prevents further actions from starting.
 
-## Use the BioBuzz builder's six instructions
+The OpMode above uses the FTC SDK supplied by your robot project. The independent
+Java consumer compiles the adapter, demo factories and runner; its tests execute
+the shared routine and verify completion/cancellation. The SDK-specific OpMode
+itself is integration code to copy into an FTC project.
 
-For the actual builder routine, use `new JavaExample<JavaStateMachine.Action>(auto)`
-where `auto` implements `JavaExample.Auto<JavaStateMachine.Action>`. Then pass
-`adapter.compile(json)`, `adapter.decode(barcodeText)` or `adapter.load(filename)`
-to `new JavaStateMachine(...)`. Use the shared
-[BioBuzz routine](../examples/routines/biobuzz-route.json) unchanged. `delay`
-returns `JavaStateMachine.delay(seconds)`; the other five factories return your
-robot's stateful actions. This uses the same fields and conversions described in
-the [BioBuzz walkthrough](biobuzz-example.md).
+## Replace the simulated actions with robot behavior
 
-For example, a drive factory should return an action whose `start()` sets its
-target, whose `update()` updates the team's controller and returns its
-at-target result, and whose `stop()` stops the drivetrain. Intake, deposit,
-chase and park likewise finish according to sensors, elapsed time or the team's
-state logic. Do not wrap a method that merely starts a motor in `once`: that
-would mark it complete immediately and begin the next step on the next loop.
-`once` is appropriate for instantaneous changes or reporting only.
+Use `BioBuzzStateMachineDemo` as the shape of your own
+`JavaExample.Auto<JavaStateMachine.Action>` implementation. Keep the real
+nonblocking delay. For each other action, replace the gamepad completion logic:
 
-Compile/select during Init, then call the runner only from `loop()` after Start.
-Stopping cancels the current action and prevents later ones from starting; a
-completed sequence stays complete. Create a new runner for another execution.
-Keep your usual global autonomous time limit, error handling and robot-wide
-output shutdown in the OpMode. These helpers add no background thread and do
-not know your hardware or navigation implementation.
+- `start()` initializes the target and outputs once.
+- `update()` runs a little control logic each OpMode loop and returns true only
+  when the action is complete, according to sensors, elapsed time or controller state.
+- `stop()` releases that action's outputs on completion or cancellation.
+
+For drive, pass all pose/alignment/offset fields into your navigation logic;
+for intake, deposit, chase and park, use your team's corresponding state logic.
+The [BioBuzz walkthrough](biobuzz-example.md) explains units and conversions.
+Do not sleep, busy-wait or wrap a motor-start call in `once`: that would either
+block the loop or mark the action complete before the robot finishes.
+
+For a routine from the actual builder QR, keep the same adapter and runner and
+replace `adapter.compile(json)` with `adapter.decode(barcodeText)`, or use
+`adapter.load(filename)` for a previously scanned/saved routine. Scan/select during
+Init and call the runner only from `loop()` after Start, rather than repeatedly
+starting a sequence in a camera callback.
+
+The runner is single use. Create a new one for another execution. Keep the team's
+normal autonomous time limit, runtime error handling and robot-wide shutdown in
+the OpMode when adding hardware. No background threads or scheduler are involved.

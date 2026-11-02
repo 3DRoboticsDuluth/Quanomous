@@ -52,3 +52,5 @@ remain follow-up work.
 
 For a non-command-based robot, see the [plain OpMode state-machine example](../docs/state-machine-example.md). It includes a loop-driven runner, nonblocking delay, completion and stop handling, and an FTC OpMode integration example.
 
+
+The plain OpMode demo uses the same shared BioBuzz routine and all six factories in BioBuzzStateMachineDemo. Hardware actions wait for a fresh gamepad A press; delay uses real elapsed time. See the walkthrough for copying the shared JSON into TeamCode assets and replacing simulated actions.
