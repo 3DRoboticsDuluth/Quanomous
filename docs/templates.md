@@ -15,7 +15,15 @@
 
 Offsets default to zero. Axial reference is center/front/back; lateral reference is center/left/right. The example robot uses 23.5 inches per tile and no automatic alliance mirroring for drive coordinates. These are template choices, not library rules.
 
-Deposit emits `ao`/`lo`; the example robot adapter accepts deprecated `txo`/`tyo` aliases. The source robot actions remain scaffolding. The preview shows only explicit drive targets and delays with illustrative start positions and timing. Team action paths, alignment and offsets are not simulated.
+Deposit emits `ao`/`lo`; the example robot adapter accepts deprecated `txo`/`tyo`
+aliases. The example adapters require team-supplied physical actions. The preview
+shows only explicit drive targets and delays with illustrative start positions
+and timing. Team action paths, alignment and offsets are not simulated or counted
+toward the displayed known travel/delay estimate.
+
+Use **Load BioBuzz example** to load the shared nine-step routine and **View JSON**
+to inspect exactly what Start exports. Both the examples and the headless builder
+check use this same file. Chase's number field accepts whole positive cycles.
 
 ## Add a team template
 

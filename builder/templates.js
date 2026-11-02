@@ -2,14 +2,14 @@
 // dispatches by cmd and does not prescribe these fields or their meaning.
 (function (root) {
   const side = [['Left', 'left'], ['Right', 'right']];
-  const number = (key, label, value = 0, min) => ({ key, label, value, min });
+  const number = (key, label, value = 0, min, precision) => ({ key, label, value, min, precision });
   const choice = (key, label, options) => ({ key, label, options });
   const templates = {
     biobuzz: {
       title: 'BioBuzz',
       commands: [
         { cmd: 'delay', label: 'Delay', fields: [number('seconds', 'Seconds', 1, 0)] },
-        { cmd: 'chase', label: 'Chase', fields: [number('cycles', 'Cycles', 1, 1)] },
+        { cmd: 'chase', label: 'Chase', fields: [number('cycles', 'Cycles', 1, 1, 1)] },
         { cmd: 'intake', label: 'Intake', fields: [
           choice('place', 'Place', [['Garden', 'garden'], ['Flower', 'flower'], ['Loading Zone', 'loading_zone']]),
           choice('side', 'Side', side)
@@ -37,7 +37,7 @@
           for (const field of command.fields) {
             this.appendDummyInput().appendField(field.label).appendField(
               field.options ? new Blockly.FieldDropdown(field.options) :
-                new Blockly.FieldNumber(field.value, field.min), field.key);
+                new Blockly.FieldNumber(field.value, field.min, undefined, field.precision), field.key);
           }
           this.setPreviousStatement(true);
           this.setNextStatement(true);
@@ -54,6 +54,29 @@
   const api = root.QuanomousTemplates = {
     templates,
     active: 'biobuzz',
+    loadExample(workspace, steps) {
+      workspace.clear();
+      const start = workspace.newBlock('start');
+      const partner = workspace.newBlock('partner_start');
+      let previous = start;
+      const blocks = [start, partner];
+      for (const step of steps) {
+        const block = workspace.newBlock('biobuzz_' + step.cmd);
+        for (const [key, value] of Object.entries(step)) {
+          if (key !== 'cmd') block.setFieldValue(String(value), key);
+        }
+        previous.nextConnection.connect(block.previousConnection);
+        previous = block;
+        blocks.push(block);
+      }
+      // Headless tests use the same loader; rendering belongs to WorkspaceSvg.
+      for (const block of blocks) {
+        if (block.initSvg) { block.initSvg(); block.render(); }
+      }
+      if (start.moveBy) start.moveBy(40, 40);
+      if (partner.moveBy) partner.moveBy(340, 40);
+      if (workspace.scroll) workspace.scroll(0, 0);
+    },
     // Only explicit drive and delay steps can be previewed without a team's
     // navigation implementation. Named actions remain at the last known pose.
     preview(startBlock, startPose, tileWidth) {
@@ -91,12 +114,16 @@
       note.textContent = `${templates[api.active].title} template: preview shows explicit drive targets and delays only. Team actions, alignment and offsets are not simulated. Start positions and timing are illustrative.`;
     }
   }
+  api.selectTemplate = name => {
+    api.active = name;
+    select.value = name;
+    applyTemplate();
+    workspace.updateToolbox(toolbox);
+  };
   applyTemplate();
   select.addEventListener('change', () => {
     if (!root.confirm('Switching templates clears both routines. Continue?')) { select.value = api.active; return; }
-    api.active = select.value;
-    applyTemplate();
-    workspace.updateToolbox(toolbox);
+    api.selectTemplate(select.value);
     document.getElementById('clearBtn').click();
   });
 })(typeof window === 'undefined' ? globalThis : window);

@@ -29,7 +29,9 @@ Regenerate fixtures deliberately with `node fixtures/create-fixture.cjs` only wh
 - Check phone layout and offline refresh after service-worker installation.
 - Scan with the intended robot and confirm decoded values before motion.
 
-These checks are separate from headless/Gradle checks. Inherited single-file bundling and legacy export/preview issues require follow-up; this milestone does not certify tournament use.
+These checks are separate from headless/Gradle checks. The single-file bundler is
+unsupported and no longer offered in the UI. Legacy preview fidelity requires
+follow-up; this milestone does not certify tournament use.
 
 ## Public cutover
 
@@ -39,4 +41,20 @@ Keep the repository name and Pages root. This branch adds no deployment workflow
 
 November 1, 2026: library checks and Android lint passed; local AAR publication and both independent consumer checks passed. Node template/export, connected-block clearing and Start registration regression checks passed. Documentation links and Git whitespace checks passed.
 
-Desktop browser inspection confirmed Blockly/BioBuzz artwork, action blocks, a connected delay routine, QR rendering and return to the editor. Both directions of template switching were verified after fixing duplicate Start registration and clearing. No new console errors occurred in the corrected template switches. Phone layout, real camera scanning and offline-device acceptance remain outstanding.
+Desktop browser inspection confirmed Blockly/BioBuzz artwork, action blocks, a
+connected delay routine, QR rendering and return to the editor. Both directions
+of template switching were verified after fixing duplicate Start registration
+and clearing.
+
+The onboarding review added a shared example loader, live JSON inspection and
+complete Java/Kotlin reporting-only adapters. Tests cover these entry points and
+block export failures, disconnected actions and duplicate Start roots. Legacy
+Drive axial selection and fractional Delay export were corrected. Phone-sized
+layout now scrolls through editor and preview instead of compressing both into
+half a screen. A 390-by-844 browser viewport loaded the nine-step example and
+rendered its QR. QR output includes a four-module white quiet zone. Preview
+timing explicitly excludes unknown team action durations.
+
+Physical phone/camera scanning and real offline-device acceptance remain
+outstanding. Public Maven hosting remains a release prerequisite, not a task
+completed by the local artifact checks.

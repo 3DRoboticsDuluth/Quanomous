@@ -78,7 +78,7 @@ Blockly.Blocks['drive_to'] = {
       .appendField("Axial:")
       .appendField(new Blockly.FieldDropdown(
         [["Center","center"],["Front","front"], ["Back","back"]]
-      ))
+      ), "Axial")
       .appendField("Lateral:")
       .appendField(new Blockly.FieldDropdown(
         [["Center","center"],["Left","left"], ["Right","right"]]
@@ -178,7 +178,7 @@ Blockly.JavaScript['deposit'] = function(block){
   return JSON.stringify({cmd:'deposit', locale, sorted, txo, tyo});
 };
 
-// DELAY (milliseconds output)
+// DELAY (fractional seconds)
 Blockly.Blocks['delay_s'] = {
   init: function(){
     this.appendDummyInput()
@@ -192,7 +192,7 @@ Blockly.Blocks['delay_s'] = {
 };
 Blockly.JavaScript['delay_s'] = function(block){
   const s = Number(block.getFieldValue('s'))||0;
-  const seconds = Math.round(s);
+  const seconds = s;
   return JSON.stringify({cmd:'delay', seconds});
 };
 

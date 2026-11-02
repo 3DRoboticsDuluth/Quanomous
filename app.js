@@ -645,6 +645,10 @@ function ensureStartBlock() {
 workspace.addChangeListener(() => {
   ensureStartBlock();
   updateVisualization();
+  if (document.getElementById('json-details').open) {
+    const plan = planForOutput();
+    document.getElementById('routine-json').value = plan ? JSON.stringify(plan, null, 2) : '';
+  }
 });
 
 document.getElementById('alliance').addEventListener('change', (e) => {
@@ -952,6 +956,12 @@ function updateWaypointsList() {
     list.innerHTML = '<div class="info-text">No waypoints. Add blocks to see path.</div>';
     return;
   }
+  if (window.QuanomousTemplates.active !== 'decode') {
+    list.innerHTML = currentPath.map((wp, index) =>
+      `<div class="waypoint-item">${index + 1}. ${wp.label}${wp.type === 'unmodeled' ? ' (team action; not simulated)' : ''}</div>`
+    ).join('');
+    return;
+  }
   
   let html = '';
   let cumulativeTime = 0;
@@ -984,6 +994,11 @@ function updateWaypointsList() {
 
 function updateTimerDisplay() {
   const timerEl = document.getElementById('timer-display');
+  if (window.QuanomousTemplates.active !== 'decode') {
+    timerEl.textContent = `Known travel + delay: ${totalPathTime.toFixed(1)}s (team action times excluded)`;
+    timerEl.style.color = '#cccccc';
+    return;
+  }
   const remaining = 30 - totalPathTime;
   
   if (remaining < 0) {
@@ -1286,11 +1301,8 @@ async function ensureKjua() {
 // QR GENERATION
 
 document.getElementById('generateBtn').addEventListener('click', async () => {
-  const plan = generatePlanJSON();
-  if (!plan.length) {
-    document.getElementById('info').textContent = 'Add blocks to generate QR';
-    return;
-  }
+  const plan = planForOutput();
+  if (!plan) return;
 
   const b64 = compressAndEncode(plan);
   document.getElementById('info').textContent = `Steps: ${plan.length} | Size: ${b64.length} chars`;
@@ -1368,7 +1380,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     const qrSize = 2000;
     
     console.log('QR Generation:', { qrSize, isMobile, viewport: `${window.innerWidth}x${window.innerHeight}` });
-    const qr = kjua({ render: 'svg', text: b64, size: qrSize, ecLevel: 'H' });
+    const qr = kjua({ render: 'svg', text: b64, size: qrSize, ecLevel: 'H', quiet: 4, fill: '#000', back: '#fff' });
     
     if (isMobile) {
       qr.style.cssText = `width: 100%; height: auto; display: block; max-width: none;`;
@@ -1377,20 +1389,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     }
     qrWrapper.appendChild(qr);
   } catch (e) {
-    console.warn('kjua not available, trying image API', e);
-    const isMobile = window.innerWidth <= 768;
-    const qrSize = 2000;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=` + encodeURIComponent(b64);
-    const img = document.createElement('img');
-    img.alt = 'QR code';
-    img.src = qrUrl;
-    
-    if (isMobile) {
-      img.style.cssText = `width: 100%; height: auto; display: block; max-width: none;`;
-    } else {
-      img.style.cssText = `width: 600px; height: 600px; display: block;`;
-    }
-    qrWrapper.appendChild(img);
+    console.warn('QR rendering failed', e);
+    qrWrapper.textContent = 'Unable to render this QR. Return to the editor and check the routine or shorten it.';
   }
 
   // Add back button at bottom
@@ -1423,68 +1423,30 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   safeLocalStorageSet('last_qr_payload', b64);
 });
 
-// BUNDLE CREATION
+// EXAMPLE AND JSON INSPECTION
 
-document.getElementById('bundleBtn').addEventListener('click', async () => {
+document.getElementById('loadExampleBtn').addEventListener('click', async () => {
   const info = document.getElementById('info');
-  info.textContent = 'Building bundle...';
-
-  const resp = await fetch(location.pathname);
-  let html = await resp.text();
-
-  async function fetchScript(src) {
-    try {
-      const r = await fetch(src);
-      if (!r.ok) throw new Error('bad');
-      return await r.text();
-    } catch (e) {
-      try {
-        const abs = new URL(src, location.href).href;
-        const r2 = await fetch(abs);
-        if (!r2.ok) throw new Error('bad2');
-        return await r2.text();
-      } catch (e2) { return null; }
-    }
+  try {
+    const response = await fetch('examples/routines/biobuzz-route.json');
+    if (!response.ok) throw new Error('The example could not be loaded. Serve the complete repository folder.');
+    const steps = await response.json();
+    if (!window.confirm('Replace both routines with the illustrative BioBuzz example?')) return;
+    window.QuanomousTemplates.selectTemplate('biobuzz');
+    document.getElementById('clearBtn').click();
+    window.QuanomousTemplates.loadExample(workspace, steps);
+    updateVisualization();
+    info.textContent = 'BioBuzz example loaded. Adapt coordinates and robot actions before use.';
+  } catch (error) {
+    info.textContent = error.message;
   }
+});
 
-  const scriptRegex = /<script[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi;
-  let match;
-  while ((match = scriptRegex.exec(html)) !== null) {
-    const src = match[1];
-    info.textContent = 'Inlining ' + src;
-    let content = null;
-    try { content = await fetchScript(src); } catch(e) { content = null; }
-    if (!content) {
-      if (src.includes('blockly')) content = await fetchScript('https://unpkg.com/blockly/blockly.min.js');
-      if (src.includes('pako')) content = await fetchScript('https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js');
-      if (src.includes('kjua')) content = await fetchScript('https://cdn.jsdelivr.net/npm/kjua@0.1.1/kjua.min.js');
-    }
-    if (content) {
-      const inlineTag = `<script>\n/* inlined ${src} */\n${content}\n<\/script>`;
-      html = html.replace(match[0], inlineTag);
-    }
-  }
-
-  const cssRegex = /<link[^>]*href=["']([^"']+\.css)["'][^>]*>/gi;
-  while ((match = cssRegex.exec(html)) !== null) {
-    const href = match[1];
-    info.textContent = 'Inlining ' + href;
-    try {
-      const r = await fetch(href);
-      if (r.ok) {
-        const css = await r.text();
-        const inline = `<style>\n/* inlined ${href} */\n${css}\n</style>`;
-        html = html.replace(match[0], inline);
-      }
-    } catch (e) { }
-  }
-
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'bundle.html'; document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 2000);
-  info.textContent = 'Bundle downloaded!';
+document.getElementById('jsonBtn').addEventListener('click', () => {
+  const plan = planForOutput();
+  if (!plan) return;
+  document.getElementById('routine-json').value = JSON.stringify(plan, null, 2);
+  document.getElementById('json-details').open = true;
 });
 
 // CLEAR WORKSPACE
@@ -1494,6 +1456,8 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   safeLocalStorageRemove('last_qr_payload');
   document.getElementById('qr').innerHTML = '';
   document.getElementById('info').textContent = '';
+  document.getElementById('routine-json').value = '';
+  document.getElementById('json-details').open = false;
   stopAnimation();
   ensureStartBlock();
   updateVisualization();
@@ -1502,46 +1466,52 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 // PLAN JSON GENERATION
 
 function generatePlanJSON() {
-  const startBlock = workspace.getTopBlocks(true).find(b => b.type === 'start');
+  const roots = workspace.getTopBlocks(true);
+  const starts = roots.filter(b => b.type === 'start');
+  if (starts.length > 1) throw new Error('Use one Start block for your exported routine.');
+  const startBlock = starts[0];
   if (!startBlock) return [];
-
+  const connected = new Set();
+  for (const root of roots.filter(b => b.type === 'start' || b.type === 'partner_start')) {
+    for (const block of root.getDescendants(false)) connected.add(block);
+  }
+  if (workspace.getAllBlocks(false).some(block => !connected.has(block))) {
+    throw new Error('Connect every action below Start or Partner Start before exporting.');
+  }
+  const generator = Blockly.JavaScript;
+  if (typeof generator.init === 'function') generator.init(workspace);
   const plan = [];
-  if (Blockly && Blockly.JavaScript && typeof Blockly.JavaScript.init === 'function') {
+  for (let current = startBlock.getNextBlock(); current; current = current.getNextBlock()) {
     try {
-      Blockly.JavaScript.init(workspace);
-    } catch (e) {
-      console.warn('Blockly.JavaScript.init() failed:', e);
-    }
-  }
-
-  let current = startBlock.getNextBlock();
-  while (current) {
-    const genFn = Blockly && Blockly.JavaScript && Blockly.JavaScript[current.type];
-    if (typeof genFn === 'function') {
-      try {
-        let code = genFn(current);
-        if (Array.isArray(code)) code = code[0];
-        if (code && code !== 'undefined') {
-          try {
-            const obj = JSON.parse(code);
-            plan.push(obj);
-          } catch (parseErr) {
-            console.warn('Failed to parse JSON for', current.type, ':', code);
-            plan.push({cmd: current.type, error: 'parse_failed'});
-          }
-        }
-      } catch (e) {
-        console.warn('Generator error for', current.type, e);
+      const generate = generator[current.type];
+      if (typeof generate !== 'function') throw new Error('No JSON generator is registered.');
+      let code = generate(current);
+      if (Array.isArray(code)) code = code[0];
+      const step = JSON.parse(code);
+      if (!step || Array.isArray(step) || typeof step.cmd !== 'string') {
+        throw new Error('The generator must return an object with a cmd name.');
       }
+      plan.push(step);
+    } catch (error) {
+      throw new Error(`Cannot export ${current.type}: ${error.message}`);
     }
-    current = current.getNextBlock();
   }
-
-  if (Blockly && Blockly.JavaScript && typeof Blockly.JavaScript.finish === 'function') {
-    try { Blockly.JavaScript.finish(workspace); } catch (e) { }
-  }
-
+  if (typeof generator.finish === 'function') generator.finish(workspace);
   return plan;
+}
+
+function planForOutput() {
+  const info = document.getElementById('info');
+  try {
+    const plan = generatePlanJSON();
+    if (!plan.length) throw new Error('Connect actions below Start to export your routine.');
+    info.textContent = `${plan.length} steps from Start. Partner Start is preview only.`;
+    return plan;
+  } catch (error) {
+    info.textContent = error.message;
+    document.getElementById('routine-json').value = '';
+    return null;
+  }
 }
 
 function compressAndEncode(plan) {

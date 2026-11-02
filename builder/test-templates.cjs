@@ -41,20 +41,32 @@ assert.ok(preview.some(w => w.type === 'unmodeled'));
 // The old Decode definitions remain available after the new template registers.
 assert.equal(typeof context.Blockly.JavaScript.intake_gate, 'function');
 assert.equal(typeof context.Blockly.JavaScript.park, 'function');
+const legacyWorkspace = new context.Blockly.Workspace();
+const legacyDrive = legacyWorkspace.newBlock('drive_to');
+legacyDrive.setFieldValue('front', 'Axial');
+assert.equal(JSON.parse(context.Blockly.JavaScript.drive_to(legacyDrive)).axial, 'front');
+const legacyDelay = legacyWorkspace.newBlock('delay_s');
+legacyDelay.setFieldValue('0.4', 's');
+assert.equal(JSON.parse(context.Blockly.JavaScript.delay_s(legacyDelay)).seconds, 0.4);
+legacyWorkspace.dispose();
 // The documented consumer example must be expressible by the same default blocks.
 const route = JSON.parse(fs.readFileSync(path.join(root, 'examples/routines/biobuzz-route.json'), 'utf8'));
 const routeWorkspace = new context.Blockly.Workspace();
-let routePrevious = routeWorkspace.newBlock('start');
-for (const step of route) {
-  const block = routeWorkspace.newBlock('biobuzz_' + step.cmd);
-  for (const [key, value] of Object.entries(step)) if (key !== 'cmd') block.setFieldValue(String(value), key);
-  routePrevious.nextConnection.connect(block.previousConnection);
-  routePrevious = block;
-}
+context.QuanomousTemplates.loadExample(routeWorkspace, route);
 context.workspace = routeWorkspace;
 assert.deepEqual(JSON.parse(JSON.stringify(context.generatePlanJSON())), route);
 context.workspace = workspace;
 routeWorkspace.dispose();
+const extraStart = workspace.newBlock('start');
+assert.throws(() => context.generatePlanJSON(), /one Start block/);
+extraStart.dispose();
+const loose = workspace.newBlock('biobuzz_delay');
+assert.throws(() => context.generatePlanJSON(), /Connect every action/);
+loose.dispose();
+const delayGenerator = context.Blockly.JavaScript.biobuzz_delay;
+context.Blockly.JavaScript.biobuzz_delay = () => { throw new Error('Broken team generator'); };
+assert.throws(() => context.generatePlanJSON(), /Broken team generator/);
+context.Blockly.JavaScript.biobuzz_delay = delayGenerator;
 // The actual Clear handler must clear a connected graph without disposing its
 // children twice. UI-only collaborators are irrelevant to this regression.
 let clearHandler;
@@ -62,7 +74,7 @@ const clearInfo = { textContent: 'previous payload' };
 const clearQr = { innerHTML: 'previous QR' };
 context.document = { getElementById(id) { return {
   clearBtn: { addEventListener(_, callback) { clearHandler = callback; } },
-  info: clearInfo, qr: clearQr
+  info: clearInfo, qr: clearQr, 'routine-json': { value: 'stale JSON' }, 'json-details': { open: true }
 }[id]; } };
 context.stopAnimation = () => {};
 context.ensureStartBlock = () => {};
@@ -122,3 +134,4 @@ console.log('PASS: all six BioBuzz commands, signed coordinates, fractional dela
 console.log('PASS: template selector, switch cancellation and confirmed clearing');
 console.log('PASS: Clear handles a connected block graph and removes old output');
 console.log('PASS: documented BioBuzz routine matches builder export');
+console.log('PASS: invalid generators, duplicate starts and disconnected actions block export');

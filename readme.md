@@ -2,7 +2,10 @@
 
 Quanomous lets FTC teams create autonomous routines with Blockly, transfer them as compressed QR codes, and map JSON instructions to robot actions. This repository contains the builder, a Kotlin Android library, and Java/Kotlin consumer examples. Teams define their own instructions and execution behavior.
 
-This branch is a local consolidation candidate. Public publishing and deployment have not changed. The existing hosted builder remains at [3droboticsduluth.github.io/Quanomous](https://3droboticsduluth.github.io/Quanomous/).
+This is an unpublished consolidation candidate on `codex/consolidate-quanomous`.
+The [public builder](https://3droboticsduluth.github.io/Quanomous/) still runs the
+older version; use the local builder below to try this PR's BioBuzz template.
+There is not yet a public Maven installation URL for this candidate.
 
 ## Start here
 
@@ -22,11 +25,32 @@ From the repository root:
 python -m http.server 5500 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:5500/. BioBuzz is the default; Decode retains legacy blocks. Connect actions below Start and generate QR. Partner Start affects preview only. Switching templates asks before clearing both routines.
+If you have not checked out this candidate, clone it first:
+
+```shell
+git clone --branch codex/consolidate-quanomous https://github.com/3DRoboticsDuluth/Quanomous.git
+cd Quanomous
+```
+
+Run the Python command above in that folder and open http://127.0.0.1:5500/.
+Keep the server running. Do not open `index.html` directly as a file: the shared
+example loader needs HTTP. BioBuzz is the default; Decode retains legacy blocks.
+
+1. Click **Load BioBuzz example** and confirm replacing the routines.
+2. Click **View JSON**. It is the same routine used by both language examples.
+3. Follow the [BioBuzz walkthrough](docs/biobuzz-example.md) to try it without hardware.
+4. Edit connected blocks and generate QR for your team's scanner.
+
+Only the chain below **Start** is exported. **Partner Start** is preview only.
+Switching templates asks before clearing both routines. Disconnected actions or
+multiple Start blocks must be resolved before export.
 
 The BioBuzz preview shows explicit drive targets and delays. It does not simulate a team's intake/deposit paths, alignment or offsets. Starting poses and timing are illustrative. Workspaces are not restored after reload. The last payload is stored, but there is no recovery UI.
 
-The service worker caches scripts and selected artwork over localhost/HTTPS. Offline upgrade and real camera use need acceptance checks. The inherited Bundle feature and PowerShell bundler have not been repaired or certified; use a complete checkout for local serving.
+The service worker caches scripts, the shared example and selected artwork over
+localhost/HTTPS. Offline upgrade and real camera use need device acceptance checks.
+The broken Bundle control was removed; the old PowerShell bundler is historical
+and unsupported. Use a complete checkout for local serving.
 
 ## Verify the branch
 

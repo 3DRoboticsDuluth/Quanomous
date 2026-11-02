@@ -43,6 +43,16 @@ public class JavaExampleTest {
         assertEquals(Arrays.asList("delay", "drive", "deposit", "intake", "deposit", "intake", "deposit", "chase", "park"), names);
     }
 
+    @Test public void newTeamsCanRunThePublicDryRunWithoutRobotFactories() throws Exception {
+        List<Runnable> commands = JavaDryRun.create(events::add).compile(resource("biobuzz-route.json").toString());
+        assertTrue(events.isEmpty());
+        commands.forEach(Runnable::run);
+        assertEquals(9, events.size());
+        assertEquals("Delay 0.4 seconds", events.get(0));
+        assertTrue(events.get(1).contains("x=1.0 y=-2.0"));
+        assertEquals("Park RIGHT", events.get(8));
+    }
+
     @Test public void preservesDepositAliasesZeroPrecedenceAndSignedDriveDefaults() {
         List<Runnable> commands = adapter.compile("[{\"cmd\":\"deposit\",\"side\":\"LEFT\",\"ao\":0,\"txo\":9,\"tyo\":2},"
             + "{\"cmd\":\"drive\",\"tx\":-1,\"ty\":2,\"h\":-90}]");

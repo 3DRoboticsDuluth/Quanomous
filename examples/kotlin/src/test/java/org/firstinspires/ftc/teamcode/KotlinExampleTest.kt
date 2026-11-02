@@ -44,6 +44,16 @@ class KotlinExampleTest {
             events.map { it.substringBefore(':') })
     }
 
+    @Test fun newTeamsCanRunThePublicDryRunWithoutRobotFactories() {
+        val commands = bioBuzzDryRun { events.add(it) }.compile(resource("biobuzz-route.json"))
+        assertTrue(events.isEmpty())
+        commands.forEach { it() }
+        assertEquals(9, events.size)
+        assertEquals("Delay 0.4 seconds", events.first())
+        assertTrue(events[1].contains("x=1.0 y=-2.0"))
+        assertEquals("Park RIGHT", events.last())
+    }
+
     @Test fun preservesDepositAliasesZeroPrecedenceAndSignedDriveDefaults() {
         val commands = adapter.compile("""[{"cmd":"deposit","side":"LEFT","ao":0,"txo":9,"tyo":2},
             {"cmd":"drive","tx":-1,"ty":2,"h":-90}]""")

@@ -16,8 +16,16 @@ Publish the library first, then run from the repository root:
 
 Use `./gradlew` on macOS/Linux. Set `ANDROID_HOME` for both builds, or give each build its own untracked `local.properties`.
 
-- [Java](java/src/main/java/org/firstinspires/ftc/teamcode/JavaExample.java) registers `CommandFactory<Runnable>` handlers.
-- [Kotlin](kotlin/src/main/java/org/firstinspires/ftc/teamcode/KotlinExample.kt) uses the existing map of JSON handlers returning `() -> Unit`.
+- [JavaExample<T>](java/src/main/java/org/firstinspires/ftc/teamcode/JavaExample.java) registers team factories through `CommandFactory<T>`.
+- [KotlinExample<T>](kotlin/src/main/java/org/firstinspires/ftc/teamcode/KotlinExample.kt) registers the same fields through the map API.
+- [JavaDryRun](java/src/main/java/org/firstinspires/ftc/teamcode/JavaDryRun.java) and [KotlinDryRun](kotlin/src/main/java/org/firstinspires/ftc/teamcode/KotlinDryRun.kt) provide complete reporting-only factories to try first.
+
+Choose one language. For Java, copy `JavaExample.java` and `JavaDryRun.java` into
+your FTC project's `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/` folder.
+For Kotlin, copy `KotlinExample.kt` and `KotlinDryRun.kt` into that same package in
+a project already configured for Kotlin. Add the library dependency as described
+in [installation](../docs/library.md). Do not copy these modules' Gradle files into
+TeamCode or expect an OpMode to appear: these are helpers called by your OpMode.
 
 Both implement Devil Dogs' BioBuzz instruction contract: `delay`, `chase`,
 `intake`, `deposit`, `park`, and `drive`. The builder's default BioBuzz blocks

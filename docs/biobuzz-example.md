@@ -7,6 +7,11 @@ robot behavior. The generic Quanomous library contains none of these definitions
 
 ## Example routine
 
+Start the local builder as described in the [README](../readme.md). Click
+**Load BioBuzz example**, confirm replacement, and click **View JSON**. This loads
+the exact file below; no manual reconstruction of the nine blocks is needed.
+The public hosted builder remains the older version until this draft is deployed.
+
 [biobuzz-route.json](../examples/routines/biobuzz-route.json) illustrates:
 
 1. Wait 0.4 seconds for an alliance partner to clear.
@@ -21,6 +26,38 @@ competition route. Coordinates, offsets, duration and physical clearance must be
 chosen and checked on the team's robot. The routine starts by scoring preloads
 before collection and finishes with park; the fixture used for field-coverage
 testing separately exercises every parameter with nondefault values.
+
+## First try without robot hardware
+
+Install the local library and copy the two helper files for your chosen language
+as described in the [examples README](../examples/README.md). Inside your existing
+OpMode, this Java smoke test reports one delay to Driver Station telemetry:
+
+```java
+JavaExample<Runnable> adapter = JavaDryRun.create(message -> telemetry.addLine(message));
+adapter.compile("[{\"cmd\":\"delay\",\"seconds\":0.4}]").forEach(Runnable::run);
+telemetry.update();
+```
+
+The Kotlin equivalent is:
+
+```kotlin
+val adapter = bioBuzzDryRun { telemetry.addLine(it) }
+adapter.compile("""[{"cmd":"delay","seconds":0.4}]""").forEach { it() }
+telemetry.update()
+```
+
+Expected output is `Delay 0.4 seconds`. Replace the JSON string with the full
+**View JSON** contents to report the nine-step example. Both helpers implement
+all six commands and only report values; even delay does not sleep in dry run.
+Their public entry points are exercised by the consumer tests.
+If trying these outside an OpMode, use `System.out::println` in Java or `::println`
+in Kotlin instead of telemetry. Place the smoke test in a one-time initialization
+path so it reports once, rather than adding the messages on every loop iteration.
+
+Use `compile` for JSON text, `decode` for the Base64 barcode text supplied by a
+camera/scanner, and `load` for a filename already saved on the Robot Controller.
+These are three different inputs, not interchangeable strings.
 
 ## Bind the factories to your robot
 
@@ -76,6 +113,12 @@ Call `compile(json)` for text routines or `load(filename)` for stored ones. Came
 ingestion can first call `Quanomous.process(barcodeData)` and pass the returned
 filename to `load`. The example tests use the shared builder-generated compressed
 payload, so the Java/Kotlin API and default blocks are checked together.
+
+During initialization, scan/store and select the intended routine. At Auto start,
+load and schedule that selection once. Do not put scheduling in the repeated
+camera callback: seeing the same QR repeatedly must not repeatedly start Auto.
+This repository supplies barcode text decoding, not a Limelight/camera driver,
+OpMode registration, hardware map or complete navigation implementation.
 
 ## Customize
 
