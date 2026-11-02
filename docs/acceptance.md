@@ -55,9 +55,9 @@ CI/fixtures do not substitute for hardware acceptance.
   it is not a collision or complete runtime simulation.
 - [ ] Switch BioBuzz → Decode → BioBuzz, testing cancellation and confirmation
   of clearing. Verify that the intended template is selected before QR export.
-- [ ] Test offline refresh after the service worker has installed and the page
+- [x] **Passed locally, November 2, 2026.** Test offline refresh after the service worker has installed and the page
   has been reopened online. Load the sample and render QR while offline.
-- [ ] Test an upgrade from the old builder to the candidate at the same test
+- [x] **Passed locally, November 2, 2026.** Test an upgrade from the old builder to the candidate at the same test
   origin. Reopen/reload after worker activation and confirm new controls/sample
   are loaded, with no mixed old assets. Do not treat a new incognito session as
   a cache-upgrade test.
@@ -88,3 +88,24 @@ CI/fixtures do not substitute for hardware acceptance.
 No merge, deployment, tag creation, staging/upload or publication was performed
 as part of this audit. The remaining hardware/offline/recovery checks are not
 claimed complete by successful CI or compilation.
+
+## Local offline/cache evidence � November 2, 2026
+
+Tested in isolated headless Chrome on localhost under /Quanomous/, the same
+path shape as production. The server sent Cache-Control: no-store to prevent
+HTTP caching from hiding missing service-worker entries. A fresh context first
+installed origin/main's ftc-qr-cache-v1. After switching served files to the
+candidate, ordinary reload/registration activated ftc-qr-cache-review-6; no
+forced update(), storage clearing or new browser context was used for the upgrade.
+The old cache was removed and SHA-256 comparisons confirmed all 18 cached
+responses matched the candidate files, including HTML, scripts, artwork and JSON.
+
+With network disabled (navigator.onLine=false), refresh, exact nine-step sample
+JSON, SVG QR rendering, return to editor, Decode/BioBuzz switching and sample
+reload passed. No page errors or failed resource requests occurred in that phase.
+The test found and fixed the missing sw_register.js precache entry, bumped the
+cache version and added a headless Node regression check covering every shell
+script and the existence of all precached files.
+
+This is local Chrome evidence, not a physical-device/camera result. The public
+Pages cache upgrade still needs a smoke check after authorized deployment.

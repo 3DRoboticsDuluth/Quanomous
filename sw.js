@@ -1,7 +1,7 @@
 // Cache the complete builder. Bump CACHE_NAME when shipped assets change,
 // and add any new runtime assets to FILES_TO_CACHE.
 
-const CACHE_NAME = 'ftc-qr-cache-review-5';
+const CACHE_NAME = 'ftc-qr-cache-review-6';
 const FILES_TO_CACHE = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const FILES_TO_CACHE = [
   './builder/templates.js',
   './examples/java/src/main/assets/biobuzz-route.json',
   './app.js',
+  './sw_register.js',
   './blockly.min.js',
   './kjua.min.js',
   './pako.min.js',

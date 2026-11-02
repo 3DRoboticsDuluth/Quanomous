@@ -135,3 +135,15 @@ console.log('PASS: template selector, switch cancellation and confirmed clearing
 console.log('PASS: Clear handles a connected block graph and removes old output');
 console.log('PASS: documented BioBuzz routine matches builder export');
 console.log('PASS: invalid generators, duplicate starts and disconnected actions block export');
+
+// Every local script loaded by the shell must be available after an offline refresh.
+const shellHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const workerSource = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+const cachedFiles = vm.runInNewContext(workerSource.match(/const FILES_TO_CACHE = (\[[\s\S]*?\]);/)[1]);
+for (const match of shellHtml.matchAll(/<script[^>]+src="([^"]+)"/g)) {
+  if (!/^(https?:)?\/\//.test(match[1])) {
+    assert.ok(cachedFiles.includes('./' + match[1].replace(/^\.\//, '')), 'Uncached shell script: ' + match[1]);
+  }
+}
+for (const file of cachedFiles) assert.ok(fs.existsSync(path.join(root, file)), 'Missing cached file: ' + file);
+console.log('PASS: offline cache includes every shell script and references existing files');

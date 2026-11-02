@@ -122,3 +122,8 @@ command scheduler lifecycle; compilation is not a robot acceptance test.
 
 The [final acceptance checklist](acceptance.md) separates verified software checks
 from remaining camera/offline/recovery evidence and the explicit release decision.
+
+Local offline refresh and old-cache upgrade are now verified; see
+[acceptance evidence](acceptance.md). Repeat a public-site smoke check after an
+authorized deployment. Portable organizational signing recovery remains open;
+camera acceptance remains deferred by maintainer choice.

@@ -51,8 +51,9 @@ half a screen. A 390-by-844 browser viewport loaded the nine-step example and
 rendered its QR. QR output includes a four-module white quiet zone. Preview
 timing explicitly excludes unknown team action durations.
 
-Physical phone/camera scanning and real offline-device acceptance remain
-outstanding. Public Maven hosting remains a release prerequisite, not a task
+Physical phone/camera scanning remains deferred. Local Chrome offline refresh
+and same-origin old-cache upgrade passed on November 2, 2026; physical-device
+coverage is not claimed. Public Maven hosting remains a release prerequisite, not a task
 completed by the local artifact checks.
 
 ## Current example scope
@@ -92,3 +93,9 @@ unchecked pending evidence.
 November 2, 2026 maintainer decision: actual camera scanning and repeated camera
 ingestion are deferred because hardware is unavailable. They are follow-up work,
 not prerequisites for the initial release, and have not been marked passed.
+
+Local offline acceptance passed with the network disabled and HTTP cache disabled
+by no-store responses. The origin/main v1 worker upgraded via ordinary reloads
+to review-6; all 18 cached responses matched candidate bytes. Offline sample/JSON,
+QR, return and template switching passed with no page errors or failed resources.
+See [acceptance evidence](acceptance.md) for the exact scope and remaining work.
