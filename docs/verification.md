@@ -14,6 +14,11 @@ On Windows use `gradlew.bat` or `scripts/verify.ps1`. Library check includes deb
 
 The Node check uses bundled Blockly/Pako, creates all six BioBuzz blocks, calls the application's export function and compares `fixtures/biobuzz.json`. Library tests decode that compressed fixture. Independent Java/Kotlin consumers check custom handlers against the published AAR.
 
+Both consumers use the Devil Dogs BioBuzz contract. Tests check every field from
+the builder QR fixture, signed drive values, defaults, deposit aliases and
+construction before execution. The documented example route is also rebuilt
+using the real default blocks and compiled by both language adapters.
+
 Regenerate fixtures deliberately with `node fixtures/create-fixture.cjs` only when the example contract changes, review the JSON, then rerun both checks.
 
 ## Browser acceptance before deployment

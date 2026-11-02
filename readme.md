@@ -8,6 +8,7 @@ This branch is a local consolidation candidate. Public publishing and deployment
 
 - [Library installation and API](docs/library.md)
 - [Java and Kotlin examples](examples/README.md)
+- [Devil Dogs BioBuzz integration walkthrough](docs/biobuzz-example.md)
 - [BioBuzz and team-defined templates](docs/templates.md)
 - [Architecture and scope](docs/strategy.md)
 - [Provenance and attribution](docs/provenance.md)

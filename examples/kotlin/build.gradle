@@ -6,6 +6,7 @@ android {
     namespace = 'org.firstinspires.ftc.teamcode'
     compileSdk 34
     defaultConfig { minSdk 24 }
+    sourceSets { test.resources.srcDirs rootProject.file('../fixtures'), rootProject.file('routines') }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

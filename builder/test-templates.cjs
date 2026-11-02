@@ -41,6 +41,20 @@ assert.ok(preview.some(w => w.type === 'unmodeled'));
 // The old Decode definitions remain available after the new template registers.
 assert.equal(typeof context.Blockly.JavaScript.intake_gate, 'function');
 assert.equal(typeof context.Blockly.JavaScript.park, 'function');
+// The documented consumer example must be expressible by the same default blocks.
+const route = JSON.parse(fs.readFileSync(path.join(root, 'examples/routines/biobuzz-route.json'), 'utf8'));
+const routeWorkspace = new context.Blockly.Workspace();
+let routePrevious = routeWorkspace.newBlock('start');
+for (const step of route) {
+  const block = routeWorkspace.newBlock('biobuzz_' + step.cmd);
+  for (const [key, value] of Object.entries(step)) if (key !== 'cmd') block.setFieldValue(String(value), key);
+  routePrevious.nextConnection.connect(block.previousConnection);
+  routePrevious = block;
+}
+context.workspace = routeWorkspace;
+assert.deepEqual(JSON.parse(JSON.stringify(context.generatePlanJSON())), route);
+context.workspace = workspace;
+routeWorkspace.dispose();
 // The actual Clear handler must clear a connected graph without disposing its
 // children twice. UI-only collaborators are irrelevant to this regression.
 let clearHandler;
@@ -107,3 +121,4 @@ assert.equal(updates, 1);
 console.log('PASS: all six BioBuzz commands, signed coordinates, fractional delay, offsets, legacy registration and compressed fixture');
 console.log('PASS: template selector, switch cancellation and confirmed clearing');
 console.log('PASS: Clear handles a connected block graph and removes old output');
+console.log('PASS: documented BioBuzz routine matches builder export');

@@ -1,0 +1,11 @@
+[
+  {"cmd":"delay","seconds":0.4},
+  {"cmd":"drive","tx":1,"ty":-2,"h":90,"axial":"front","lateral":"center","ao":0,"lo":0},
+  {"cmd":"deposit","side":"right","ao":0,"lo":0},
+  {"cmd":"intake","place":"garden","side":"right"},
+  {"cmd":"deposit","side":"left","ao":0.5,"lo":-0.25},
+  {"cmd":"intake","place":"flower","side":"left"},
+  {"cmd":"deposit","side":"left","ao":0,"lo":0},
+  {"cmd":"chase","cycles":2},
+  {"cmd":"park","side":"right"}
+]
