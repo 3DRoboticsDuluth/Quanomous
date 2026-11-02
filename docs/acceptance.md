@@ -64,7 +64,7 @@ CI/fixtures do not substitute for hardware acceptance.
 
 ## Signing recovery
 
-- [ ] Arrange and test a portable organizational backup of the current signing
+- [ ] **Deferred by maintainer, November 2, 2026; not blocking this deployment.** Arrange and test a portable organizational backup of the current signing
   key, passphrase and revocation material in organization-controlled secure
   storage. The existing DPAPI backup is tied to this Windows account/machine
   context and is not proof of recovery elsewhere. Do not commit backup material.
@@ -109,3 +109,7 @@ script and the existence of all precached files.
 
 This is local Chrome evidence, not a physical-device/camera result. The public
 Pages cache upgrade still needs a smoke check after authorized deployment.
+
+Maintainer authorization, November 2, 2026: defer portable signing-key backup,
+merge the consolidation PR and deploy the builder. Library staging/publication
+is explicitly excluded and remains a separate authorization step.

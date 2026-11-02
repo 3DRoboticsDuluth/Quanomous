@@ -70,6 +70,8 @@ The current recovery backup is encrypted with Windows DPAPI at
 It contains the exported key and passphrase and can be decrypted only in the
 originating Windows user's context. It is not a portable organizational backup;
 arrange secure organizational recovery storage before relying on another machine.
+The maintainer deferred this portable backup on November 2, 2026; it does not
+block the authorized builder deployment.
 Secret values are not stored in the repository.
 
 Required reviewers can be added later if an additional GitHub approval gate is
