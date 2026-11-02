@@ -11,6 +11,5 @@ android {
 dependencies {
     // Supplied at runtime by the team's FTC robot project.
     compileOnly 'org.firstinspires.ftc:RobotCore:12.0.0'
-    compileOnly 'dev.nextftc:ftc:1.1.0'
     implementation 'com.threedrd:quanomous:0.1.0-SNAPSHOT'
 }

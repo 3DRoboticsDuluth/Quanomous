@@ -5,11 +5,11 @@ Choose your language and the way your robot runs autonomous:
 | | Java | Kotlin |
 | --- | --- | --- |
 | Plain LinearOpMode: while loop and switch/when | [QuanomousStateMachineOpMode.java](java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.java) | [QuanomousStateMachineOpMode.kt](kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.kt) |
-| Command-based: NextFTC 1.1.0 | [QuanomousCommandOpMode.java](java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.java) | [QuanomousCommandOpMode.kt](kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.kt) |
+| Command mapping: bring your command library | [QuanomousCommandOpMode.java](java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.java) | [QuanomousCommandOpMode.kt](kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.kt) |
 
 All four load the same [BioBuzz JSON asset](java/src/main/assets/biobuzz-route.json),
 which the builder loads with **Load BioBuzz example**. They focus on reading and
-interpreting the six instructions. Delay is implemented; the five robot-specific
+interpreting the six instructions. The robot-specific
 methods are explicit placeholders to replace with your team's code before use.
 There are no button simulations, telemetry demonstrations or extra helper classes.
 
@@ -21,10 +21,8 @@ There are no button simulations, telemetry demonstrations or extra helper classe
    Java/Kotlin versions share class names. Kotlin requires your project's normal
    Kotlin configuration. No other helper source files are needed.
 3. Copy the JSON asset into `TeamCode/src/main/assets/biobuzz-route.json`.
-4. For the command example, use a NextFTC 1.1.0 project and add
-   `implementation 'dev.nextftc:ftc:1.1.0'` to TeamCode if it is not present.
-   These examples target v1, matching BioBuzz, rather than the different v2 API.
-   The plain LinearOpMode source does not use NextFTC.
+4. For the command example, replace the local `Command` placeholder and its
+   sequence/schedule calls with your preferred library's types and APIs.
 5. Implement the marked team methods, then build/install your robot app and select
    the example in the Autonomous list. Unimplemented methods throw rather than
    silently skipping robot actions.
@@ -36,8 +34,8 @@ are described in the [BioBuzz contract](../docs/biobuzz-example.md).
 ## Build these examples here
 
 These independent Android library modules compile the actual OpModes against
-the locally published Quanomous AAR, FTC RobotCore 12.0.0 and NextFTC 1.1.0.
-The FTC/NextFTC dependencies are compile-only; your robot project supplies them.
+the locally published Quanomous AAR, FTC RobotCore 12.0.0 .
+The FTC dependency is compile-only; your robot project supplies them.
 The Java build uses no Kotlin plugin. These modules are compilation checks, not
 standalone robot apps; do not copy their Gradle files into TeamCode.
 

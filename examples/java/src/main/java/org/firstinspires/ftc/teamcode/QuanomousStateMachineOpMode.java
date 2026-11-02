@@ -4,51 +4,54 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.google.gson.JsonElement;
+import java.util.Iterator;
 
 @Autonomous(name = "Quanomous BioBuzz Java LinearOpMode")
 public class QuanomousStateMachineOpMode extends LinearOpMode {
     @Override public void runOpMode() throws InterruptedException {
         JsonArray routine = readRoutine();
-        if (routine == null) return;
+        Iterator<JsonElement> steps = routine.iterator();
         waitForStart();
-        int index = 0;
-        boolean entering = true;
-        ElapsedTime timer = new ElapsedTime();
-        while (opModeIsActive() && index < routine.size()) {
-            JsonObject step = routine.get(index).getAsJsonObject();
-            if (entering) timer.reset();
+        JsonObject step = steps.hasNext() ? steps.next().getAsJsonObject() : null;
+        while (opModeIsActive() && step != null) {
             boolean complete;
             switch (step.get("cmd").getAsString()) {
-                case "delay": complete = timer.seconds() >= step.get("seconds").getAsDouble(); break;
-                case "drive": complete = drive(step, entering); break;
-                case "intake": complete = intake(step, entering); break;
-                case "deposit": complete = deposit(step, entering); break;
-                case "chase": complete = chase(step, entering); break;
-                case "park": complete = park(step, entering); break;
+                case "delay": complete = delay(step); break;
+                case "drive": complete = drive(step); break;
+                case "intake": complete = intake(step); break;
+                case "deposit": complete = deposit(step); break;
+                case "chase": complete = chase(step); break;
+                case "park": complete = park(step); break;
                 default: throw new IllegalArgumentException("Unknown instruction: " + step);
             }
-            if (complete) index++;
-            entering = complete;
+            if (complete) step = steps.hasNext() ? steps.next().getAsJsonObject() : null;
             idle();
         }
     }
 
     // Team step methods: do one nonblocking update and return true when complete.
-    // entering is true only on the first loop of this instruction. Read parameters from step.
-    private boolean drive(JsonObject step, boolean entering) {
+    private boolean delay(JsonObject step) {
+        throw new UnsupportedOperationException("Supply your team's delay behavior");
+    }
+
+    private boolean drive(JsonObject step) {
         throw new UnsupportedOperationException("Supply your team's drive behavior");
     }
-    private boolean intake(JsonObject step, boolean entering) {
+
+    private boolean intake(JsonObject step) {
         throw new UnsupportedOperationException("Supply your team's intake behavior");
     }
-    private boolean deposit(JsonObject step, boolean entering) {
+
+    private boolean deposit(JsonObject step) {
         throw new UnsupportedOperationException("Supply your team's deposit behavior");
     }
-    private boolean chase(JsonObject step, boolean entering) {
+
+    private boolean chase(JsonObject step) {
         throw new UnsupportedOperationException("Supply your team's chase behavior");
     }
-    private boolean park(JsonObject step, boolean entering) {
+
+    private boolean park(JsonObject step) {
         throw new UnsupportedOperationException("Supply your team's park behavior");
     }
 
@@ -58,7 +61,7 @@ public class QuanomousStateMachineOpMode extends LinearOpMode {
             return new com.google.gson.JsonParser().parse(reader).getAsJsonArray();
         } catch (java.io.IOException | RuntimeException failure) {
             // Add your team's load-error handling here; do not start a partial routine.
-            return null;
+            return new JsonArray();
         }
     }
 }

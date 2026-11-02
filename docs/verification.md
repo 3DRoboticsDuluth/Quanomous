@@ -62,3 +62,5 @@ The Kotlin consumer also compiles its equivalent LinearOpMode against compile-on
 The examples now consist of four complete OpModes: plain LinearOpMode and NextFTC 1.1.0 command-based alternatives in Java and Kotlin. The former generic adapters and reporting helpers were removed. All four compile; both modules package the shared asset. No example tests are included.
 
 The four OpModes were simplified to JSON loading and dispatch. Java command registration uses a nested anonymous HashMap; named private methods replace simulation, button handling and telemetry. Robot-specific placeholders deliberately throw until implemented. Source compilation verifies the examples; no claim of robot execution is made.
+
+Current examples use no command-framework dependency. Their local Command types mark library integration points. The LinearOpMode loops use iterators, with timing delegated to team methods. Both language builds pass after these simplifications.

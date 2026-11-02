@@ -17,30 +17,11 @@ For Kotlin, copy [QuanomousStateMachineOpMode.kt](../examples/kotlin/src/main/ja
 
 Both versions use the JSON asset linked above. The Kotlin build includes the Java example's assets directory directly, so there is one canonical file rather than two copies.
 
-Delay is implemented. Replace the five private robot-step methods before running
-a routine; their placeholders throw to avoid pretending to execute hardware.
-Each method receives the current JSON instruction and an `entering` flag, and
-returns whether the step is complete. No button simulation is involved.
-
-## How the state advances
-
-The routine index is the outer state: delay, drive, deposit, intake, deposit,
-intake, deposit, chase, then park. `entering` distinguishes the first loop of a
-step from subsequent loops. Set motor targets and reset counters only on entry;
-update controllers and examine sensors on every loop. Set `complete` when the
-current instruction finishes, then increment the index once. Resetting the timer
-on entry means a delay is measured from execution, not from JSON loading.
-
-For more complex instructions, keep a second enum or switch for internal states.
-For example, chase might move through SEEK, COLLECT and SCORE, increment a cycle
-counter after SCORE, and complete only after the requested number of cycles.
-The outer routine index stays on chase throughout those internal transitions.
-
-Keep all step methods nonblocking: do not put a long-running inner while loop or sleep
-inside one case. That lets the outer loop continue updating telemetry, handling
-Stop and running the team's normal controller updates. Finish each step's
-outputs before advancing, and use your team's normal robot-wide shutdown.
-Add your team's normal autonomous time limit when wiring in hardware.
+Implement the private step methods with your team's behavior. Each receives the
+current JSON instruction and returns true when complete. The loop uses an iterator
+to advance only after completion; it needs no index, entry flag or example timer.
+Delay is also a team method, so the example imposes no timing implementation.
+Keep each call nonblocking so the outer loop can continue checking OpMode activity.
 
 ## Read the BioBuzz parameters
 
@@ -73,7 +54,6 @@ and `val routine = Quanomous.storage.load(filename)`.
 The library handles decoding/storage; this example deliberately interprets JSON
 itself instead of constructing commands through `QuanomousCompiler`.
 
-Both example builds compile their actual OpModes against FTC RobotCore 12.0.0
-and package the shared JSON asset. The SDK is a compile-only dependency: your
+Both example builds compile against FTC RobotCore 12.0.0 and package the shared JSON asset. The SDK is a compile-only dependency: your
 FTC robot project supplies it. The example modules contain no tests; core library
 and builder regression tests remain.
