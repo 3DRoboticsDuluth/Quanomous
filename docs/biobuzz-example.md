@@ -128,3 +128,5 @@ library schema. A team using different actions may replace them entirely. See
 [template configuration](templates.md). Physical action implementations and
 field measurements are supplied by the team; no mock action in these examples
 is presented as a working motor or navigation implementation.
+
+For traditional iterative OpModes, see the [state-machine integration](state-machine-example.md) instead of scheduling a command group.

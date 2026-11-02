@@ -49,3 +49,6 @@ use recording actions to verify the adapter without moving a robot. Asynchronous
 state machines must wait for completion; command integrations must use framework
 sequencing, requirements and cancellation. Complete framework project scaffolds
 remain follow-up work.
+
+For a non-command-based robot, see the [plain OpMode state-machine example](../docs/state-machine-example.md). It includes a loop-driven runner, nonblocking delay, completion and stop handling, and an FTC OpMode integration example.
+
