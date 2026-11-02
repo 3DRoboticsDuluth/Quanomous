@@ -72,5 +72,4 @@ the local installation instructions still apply. Pages publishes main at the
 repository root, so merging changes the public builder.
 
 The Maven group is `io.github.3droboticsduluth`; the source package and Android
-namespace remain `com.threedrd.quanomous`. Central namespace verification is
-pending; see [release operations](docs/release.md).
+namespace remain `com.threedrd.quanomous`. The Central namespace is verified; see [release operations](docs/release.md).

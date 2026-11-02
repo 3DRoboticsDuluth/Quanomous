@@ -30,24 +30,16 @@ It has read-only repository permission and no publishing credentials. Add the
 `verify` check to the main branch protection/ruleset after its first successful
 run, if required checks are desired. No rule changes have been made.
 
-## Maven Central namespace: prerequisite still open
+## Maven Central namespace: verified
 
 The chosen coordinates are io.github.3droboticsduluth:quanomous. Source packages
 and the Android namespace remain com.threedrd.quanomous. DNS verification is not
 needed for this GitHub-based namespace.
 
-In Central Portal, open View Namespaces, add io.github.3droboticsduluth and follow
-the offered verification challenge. The code-host verification process normally
-requires a temporary public repository under 3DRoboticsDuluth whose name is the
-exact Portal-issued verification key. After successful verification, delete that
-challenge repository. Do not create a guessed challenge name.
-
-GitHub sign-in automatically provisions only the personal user's namespace, not
-an organization namespace. If Portal does not offer organization verification,
-contact Central Support with the requested namespace, organization/repository
-links and evidence of your organization permissions. The organization-specific
-flow and verified status must be confirmed in the actual publisher account.
-No namespace has yet been marked verified by this preparation.
+On November 2, 2026, the maintainer confirmed Central Portal verified
+io.github.3droboticsduluth using the public challenge repository
+3DRoboticsDuluth/j8wbelyqi9. The temporary repository can now be removed.
+This records maintainer confirmation; no artifact was staged or published.
 
 Sources: [namespace registration](https://central.sonatype.org/register/namespace/),
 [publication requirements](https://central.sonatype.org/publish/requirements/).
