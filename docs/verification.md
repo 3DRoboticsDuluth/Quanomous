@@ -32,7 +32,7 @@ follow-up; this milestone does not certify tournament use.
 
 ## Public cutover
 
-Keep the repository name and Pages root. This branch adds no deployment workflow, changes no Pages settings, and publishes no remote artifact. Review the new default template before merging. Choose public hosting/final Maven coordinates and verify a clean FTC consumer. Coordinate website links and migration notices before archiving old repositories.
+Keep the repository name and Pages root. This branch adds CI and a manual Central staging workflow, changes no Pages settings, and has published no remote artifact. Pages currently publishes main at the root, so merging would deploy the builder. Review the new default template before merging. Choose public hosting/final Maven coordinates and verify a clean FTC consumer. Coordinate website links and migration notices before archiving old repositories.
 
 ## Local review result
 
@@ -71,3 +71,10 @@ Source compilation does not verify robot behavior or framework scheduling: teams
 must implement the placeholders and integrate their scheduler/lifecycle. The
 command drive mapping intentionally uses only tx, ty and h. No tests are included
 in example modules; library and builder regression checks remain.
+
+## CI and release preparation
+
+See [release operations](release.md) for verified Pages settings, namespace
+requirements, environment/secrets setup and the manual staging workflow.
+Local verification now also checks POM metadata, sources/API documentation and
+packaged example artifacts with `python scripts/check-artifacts.py`.

@@ -2,10 +2,12 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
+    id 'org.jetbrains.dokka' version '2.2.0'
+    id 'com.vanniktech.maven.publish.base' version '0.37.0'
 }
 
 group = 'com.threedrd'
-version = '0.1.0-SNAPSHOT'
+version = providers.gradleProperty('releaseVersion').getOrElse('0.1.0-SNAPSHOT')
 
 android {
     namespace = 'com.threedrd.quanomous'
@@ -37,6 +39,7 @@ afterEvaluate {
     publishing.publications {
         release(MavenPublication) {
             from components.release
+            artifact tasks.named('apiDocsJar')
             artifactId = 'quanomous'
             pom {
                 name = 'Quanomous'
@@ -48,8 +51,36 @@ afterEvaluate {
                         url = 'https://opensource.org/license/bsd-3-clause'
                     }
                 }
-                scm { url = 'https://github.com/3DRoboticsDuluth/Quanomous' }
+                developers {
+                    developer {
+                        id = '3DRoboticsDuluth'
+                        name = '3D Robotics Duluth'
+                        url = 'https://github.com/3DRoboticsDuluth'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/3DRoboticsDuluth/Quanomous'
+                    connection = 'scm:git:https://github.com/3DRoboticsDuluth/Quanomous.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/3DRoboticsDuluth/Quanomous.git'
+                }
             }
         }
+    }
+}
+
+tasks.register('apiDocsJar', Jar) {
+    dependsOn 'dokkaGeneratePublicationHtml'
+    archiveClassifier = 'javadoc'
+    from layout.buildDirectory.dir('dokka/html')
+}
+
+// Central is opt-in. Ordinary checks/local publication need no signing or account secrets.
+if (providers.gradleProperty('centralRelease').getOrElse('false') == 'true') {
+    if (!(version.toString() ==~ /[0-9]+\.[0-9]+\.[0-9]+/)) {
+        throw new GradleException('Central releases require -PreleaseVersion=X.Y.Z')
+    }
+    mavenPublishing {
+        publishToMavenCentral(false) // Upload/validate only; final release is manual in Portal.
+        signAllPublications()
     }
 }

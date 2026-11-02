@@ -62,3 +62,10 @@ val actions = compiler.load(filename)
 Names use `MM-dd-HHmm-ssSSS.json`, in local time; `ssSSS` is milliseconds within the minute. Distinct routines saved in the same millisecond can overwrite, accepted for the single-loop scan workflow. Existing filenames remain loadable.
 
 The singleton and mutable `storage`, `decoder`, `now`, `lastHash` and `lastName` remain. Processing is unsynchronized, saves are direct writes, and decoding has no decompressed-size cap. Remembered state updates only after saving succeeds. These are deliberate scope choices. Handle errors at the robot integration boundary rather than scheduling a fallback routine.
+
+## Public publishing preparation
+
+Public releases are not available yet. The manual Central staging workflow,
+namespace prerequisites and credential setup are documented in
+[release operations](release.md). Local checks do not need publishing secrets.
+The release build also produces Dokka HTML API documentation in a javadoc JAR.

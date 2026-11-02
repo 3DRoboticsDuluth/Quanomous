@@ -65,3 +65,8 @@ Other platforms can use the commands in [verification](docs/verification.md). Ch
 ## Licensing
 
 The imported library is BSD 3-Clause; see [library/LICENSE](library/LICENSE). Existing web assets retain their original provenance and third-party notices. This branch does not assign a blanket license to artwork or vendored code. See [provenance](docs/provenance.md).
+
+CI checks and the manually triggered Maven Central staging workflow are described
+in [release operations](docs/release.md). Nothing has been publicly published;
+the local installation instructions still apply. Pages publishes main at the
+repository root, so merging changes the public builder.
