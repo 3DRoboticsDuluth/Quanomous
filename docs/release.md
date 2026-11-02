@@ -84,7 +84,9 @@ creates neither tags nor releases. Preparation did not dispatch this workflow.
 
 When a release is authorized:
 
-1. Finish robot-camera/offline acceptance and confirm the namespace/account.
+1. Confirm the namespace/account and record acceptance results. Real camera
+   acceptance is deferred by maintainer decision until equipment is available;
+   do not report it as passed.
 2. Review/merge the intended source, accounting for the existing Pages auto-deploy.
 3. Create an immutable vX.Y.Z tag on the reviewed commit reachable from main.
 4. Run **Stage Maven Central release** from main, entering X.Y.Z. The workflow

@@ -88,3 +88,7 @@ See release operations for the public key fingerprint and recovery location.
 The [final audit and acceptance checklist](acceptance.md) records the reviewed
 head and passing hosted CI, with physical camera/offline/recovery results left
 unchecked pending evidence.
+
+November 2, 2026 maintainer decision: actual camera scanning and repeated camera
+ingestion are deferred because hardware is unavailable. They are follow-up work,
+not prerequisites for the initial release, and have not been marked passed.

@@ -21,7 +21,7 @@ admin bypass, and contains all four expected secret names. Values were not
 printed. Maven coordinates are io.github.3droboticsduluth:quanomous; package and
 Android namespace remain com.threedrd.quanomous.
 
-## Before merge: builder and camera acceptance
+## Builder acceptance and deferred camera follow-up
 
 Use the consolidation branch served locally, following the root README. Do not
 use the current production Pages app to judge the unpublished BioBuzz changes.
@@ -32,17 +32,22 @@ Do not change production Pages settings just to perform acceptance.
 
 Record device/browser, camera model and candidate commit with the result.
 
+Maintainer decision, November 2, 2026: no camera is currently available. The real
+camera scan and repeated scan/store checks below are deferred until equipment is
+available and are not prerequisites for the initial release. They remain unchecked;
+CI/fixtures do not substitute for hardware acceptance.
+
 - [ ] Load BioBuzz example, then View JSON. Compare the full output with
   [the canonical asset](../examples/java/src/main/assets/biobuzz-route.json).
   Expect nine instructions: delay, drive, deposit, intake, deposit, intake,
   deposit, chase, park. The first delay is 0.4; drive is tx=1, ty=-2, h=90;
   the second deposit has ao=0.5 and lo=-0.25; chase is 2; park is right.
-- [ ] Generate QR on the intended display and scan using the team's actual
+- [ ] **Deferred — camera unavailable.** Generate QR on the intended display and scan using the team's actual
   camera/scanner. Decode the returned barcode text with Quanomous and compare
   the entire JSON array with the asset, including fractional/signed values.
   Inspect decoded data without scheduling robot motion. The supplied OpMode
   templates intentionally throw until team methods are implemented.
-- [ ] Scan/store the same image repeatedly using the team's ingestion path.
+- [ ] **Deferred — camera unavailable.** Scan/store the same image repeatedly using the team's ingestion path.
   Confirm the same routine is selected rather than repeatedly starting Auto.
   Rescan a changed routine and verify it saves/loads with the changed values.
 - [ ] On the intended phone screen, verify the editor, View JSON, QR and return
@@ -66,7 +71,8 @@ Record device/browser, camera model and candidate commit with the result.
 
 ## Decision and authorized release sequence
 
-1. Record acceptance results above; leave unresolved checks unchecked.
+1. Record acceptance results above; leave unresolved checks unchecked. The camera
+   checks are deferred by maintainer decision and need not block the initial release.
 2. Confirm final PR CI is green and approve the final code/documents.
 3. Obtain explicit approval to merge AND deploy: current Pages settings make
    those the same action. This audit is not that approval.
