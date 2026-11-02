@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 android {
-    namespace = 'org.threedrd.examples.kotlin'
+    namespace = 'com.threedrd.examples.kotlin'
     compileSdk 34
     defaultConfig { minSdk 24 }
     compileOptions {
@@ -13,6 +13,6 @@ android {
 }
 kotlin { compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8 } }
 dependencies {
-    implementation 'org.threedrd:quanomous:0.1.0-SNAPSHOT'
+    implementation 'com.threedrd:quanomous:0.1.0-SNAPSHOT'
     testImplementation 'junit:junit:4.13.2'
 }

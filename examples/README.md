@@ -10,8 +10,8 @@ Publish the library first, then run from the repository root:
 
 Use `./gradlew` on macOS/Linux. Set `ANDROID_HOME` for both builds, or give each build its own untracked `local.properties`.
 
-- [Java](java/src/main/java/org/threedrd/examples/JavaExample.java) registers `CommandFactory<Runnable>` handlers.
-- [Kotlin](kotlin/src/main/java/org/threedrd/examples/KotlinExample.kt) uses the existing map of JSON handlers returning `() -> Unit`.
+- [Java](java/src/main/java/com/threedrd/examples/JavaExample.java) registers `CommandFactory<Runnable>` handlers.
+- [Kotlin](kotlin/src/main/java/com/threedrd/examples/KotlinExample.kt) uses the existing map of JSON handlers returning `() -> Unit`.
 
 Both define a custom `signal` instruction. Tests confirm compilation does not execute actions, then run them and verify order. This demonstrates that the library does not require the BioBuzz or Decode contract.
 

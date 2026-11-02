@@ -4,11 +4,11 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'org.threedrd'
+group = 'com.threedrd'
 version = '0.1.0-SNAPSHOT'
 
 android {
-    namespace = 'org.firstinspires.ftc.threedrd.quanomous'
+    namespace = 'com.threedrd.quanomous'
     compileSdk 34
     defaultConfig { minSdk 24 }
     sourceSets { test.resources.srcDir rootProject.file('fixtures') }

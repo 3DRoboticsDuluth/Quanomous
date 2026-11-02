@@ -1,5 +1,10 @@
 # Kotlin library installation and API
 
+Source packages and the Android namespace are `com.threedrd.quanomous`.
+The Maven group is `com.threedrd`. Earlier draft consumers must update their
+imports from `org.firstinspires.ftc.threedrd.quanomous` and their dependency group
+from `org.threedrd`; no compatibility package is included in this unpublished draft.
+
 The library is an Android AAR with minimum API 24, Java 8 bytecode, and transitive Kotlin runtime and Gson dependencies. It does not require an FTC SDK or command framework. Development uses JDK 17, Gradle 9.1.0, Android Gradle Plugin 8.13.2 and Kotlin 2.4.20.
 
 ## Install locally
@@ -12,7 +17,7 @@ Run from the repository root:
 
 Use `./gradlew` on macOS/Linux. Configure `ANDROID_HOME` or an untracked `local.properties` with `sdk.dir`.
 
-The AAR, sources, POM and Gradle metadata are written beneath `build/repository/org/threedrd/quanomous/0.1.0-SNAPSHOT/`. These are provisional local coordinates, not a publicly available release.
+The AAR, sources, POM and Gradle metadata are written beneath `build/repository/com/threedrd/quanomous/0.1.0-SNAPSHOT/`. These are provisional local coordinates, not a publicly available release.
 
 In a consuming Android project's dependency repository configuration, add:
 
@@ -23,7 +28,7 @@ maven { url = uri('/absolute/path/to/Quanomous/build/repository') }
 Then add to TeamCode's dependencies:
 
 ```groovy
-implementation 'org.threedrd:quanomous:0.1.0-SNAPSHOT'
+implementation 'com.threedrd:quanomous:0.1.0-SNAPSHOT'
 ```
 
 Java consumers do not need a Kotlin plugin to use the compiled library. Kotlin consumers use their normal Kotlin plugin. The tested consumers use Kotlin 2.4.20; check other compiler versions before advertising compatibility.
