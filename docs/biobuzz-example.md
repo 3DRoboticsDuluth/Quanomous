@@ -12,7 +12,7 @@ Start the local builder as described in the [README](../readme.md). Click
 the exact file below; no manual reconstruction of the nine blocks is needed.
 The public hosted builder remains the older version until this draft is deployed.
 
-[biobuzz-route.json](../examples/routines/biobuzz-route.json) illustrates:
+[biobuzz-route.json](../examples/java/src/main/assets/biobuzz-route.json) illustrates:
 
 1. Wait 0.4 seconds for an alliance partner to clear.
 2. Drive to a signed field pose.

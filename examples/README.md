@@ -29,7 +29,7 @@ TeamCode or expect an OpMode to appear: these are helpers called by your OpMode.
 
 Both implement Devil Dogs' BioBuzz instruction contract: `delay`, `chase`,
 `intake`, `deposit`, `park`, and `drive`. The builder's default BioBuzz blocks
-produce the same fields. See [the example routine](routines/biobuzz-route.json)
+produce the same fields. See [the example routine](java/src/main/assets/biobuzz-route.json)
 and [the integration walkthrough](../docs/biobuzz-example.md).
 
 Construct `JavaExample<T>` or `KotlinExample<T>` with your implementation of its
@@ -45,3 +45,5 @@ sequencing, requirements and cancellation. Complete framework project scaffolds
 remain follow-up work.
 
 For a non-command-based robot, see the [LinearOpMode switch example](../docs/state-machine-example.md). It reads the same shared BioBuzz routine and advances a step index inside `while (opModeIsActive())` when each switch case finishes. It requires no action interface or runner helper. The example modules contain no tests; verification compiles both consumers against the locally published AAR.
+
+For the LinearOpMode example, copy `java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.java` into the matching TeamCode source folder and copy `java/src/main/assets/biobuzz-route.json` into `TeamCode/src/main/assets/`. No adapter/dry-run helpers are needed for this switch-based example. The Java example compiles against FTC RobotCore 12.0.0 (compile-only); your robot project already supplies the FTC SDK.

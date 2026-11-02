@@ -55,4 +55,4 @@ Physical phone/camera scanning and real offline-device acceptance remain
 outstanding. Public Maven hosting remains a release prerequisite, not a task
 completed by the local artifact checks.
 
-The state-machine walkthrough now uses a traditional LinearOpMode while loop and switch over the current JSON instruction. The previous action-runner/demo helpers and all example-module tests were removed. The SDK-specific OpMode remains documented integration code, not part of the standalone consumer build.
+The state-machine walkthrough now uses a traditional LinearOpMode while loop and switch over the current JSON instruction. The previous action-runner/demo helpers and all example-module tests were removed. The Java consumer now compiles the actual SDK-specific LinearOpMode using compile-only FTC RobotCore 12.0.0 and packages the canonical shared routine from its assets folder. The builder loads that same file.

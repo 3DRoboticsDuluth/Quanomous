@@ -50,7 +50,7 @@ legacyDelay.setFieldValue('0.4', 's');
 assert.equal(JSON.parse(context.Blockly.JavaScript.delay_s(legacyDelay)).seconds, 0.4);
 legacyWorkspace.dispose();
 // The documented consumer example must be expressible by the same default blocks.
-const route = JSON.parse(fs.readFileSync(path.join(root, 'examples/routines/biobuzz-route.json'), 'utf8'));
+const route = JSON.parse(fs.readFileSync(path.join(root, 'examples/java/src/main/assets/biobuzz-route.json'), 'utf8'));
 const routeWorkspace = new context.Blockly.Workspace();
 context.QuanomousTemplates.loadExample(routeWorkspace, route);
 context.workspace = routeWorkspace;

@@ -1428,7 +1428,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 document.getElementById('loadExampleBtn').addEventListener('click', async () => {
   const info = document.getElementById('info');
   try {
-    const response = await fetch('examples/routines/biobuzz-route.json');
+    const response = await fetch('examples/java/src/main/assets/biobuzz-route.json');
     if (!response.ok) throw new Error('The example could not be loaded. Serve the complete repository folder.');
     const steps = await response.json();
     if (!window.confirm('Replace both routines with the illustrative BioBuzz example?')) return;
