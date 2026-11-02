@@ -73,3 +73,5 @@ repository root, so merging changes the public builder.
 
 The Maven group is `io.github.3droboticsduluth`; the source package and Android
 namespace remain `com.threedrd.quanomous`. The Central namespace is verified; see [release operations](docs/release.md).
+
+Before authorizing merge/deployment, complete the [final acceptance checklist](docs/acceptance.md).

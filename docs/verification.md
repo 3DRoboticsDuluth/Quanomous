@@ -84,3 +84,7 @@ main is the sole permitted branch, required reviewers are disabled by maintainer
 choice, and admin bypass is disabled. Local release signing and independent
 verification of five signatures passed. No remote staging or publication ran.
 See release operations for the public key fingerprint and recovery location.
+
+The [final audit and acceptance checklist](acceptance.md) records the reviewed
+head and passing hosted CI, with physical camera/offline/recovery results left
+unchecked pending evidence.

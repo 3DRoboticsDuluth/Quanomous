@@ -38,7 +38,7 @@ needed for this GitHub-based namespace.
 
 On November 2, 2026, the maintainer confirmed Central Portal verified
 io.github.3droboticsduluth using the public challenge repository
-3DRoboticsDuluth/j8wbelyqi9. The temporary repository can now be removed.
+3DRoboticsDuluth/j8wbelyqi9. The maintainer deleted the temporary repository after verification.
 This records maintainer confirmation; no artifact was staged or published.
 
 Sources: [namespace registration](https://central.sonatype.org/register/namespace/),
@@ -117,3 +117,6 @@ Load the shared BioBuzz sample, inspect JSON, generate/scan the QR, switch
 between BioBuzz and legacy Decode, and check phone layout/offline refresh.
 The example templates still require teams to implement robot behavior and their
 command scheduler lifecycle; compilation is not a robot acceptance test.
+
+The [final acceptance checklist](acceptance.md) separates verified software checks
+from remaining camera/offline/recovery evidence and the explicit release decision.
