@@ -50,7 +50,7 @@ telemetry.update()
 Expected output is `Delay 0.4 seconds`. Replace the JSON string with the full
 **View JSON** contents to report the nine-step example. Both helpers implement
 all six commands and only report values; even delay does not sleep in dry run.
-Their public entry points are exercised by the consumer tests.
+
 If trying these outside an OpMode, use `System.out::println` in Java or `::println`
 in Kotlin instead of telemetry. Place the smoke test in a one-time initialization
 path so it reports once, rather than adding the messages on every loop iteration.
@@ -111,8 +111,7 @@ when its active action is complete.
 Factories must construct actions without scheduling hardware during compilation.
 Call `compile(json)` for text routines or `load(filename)` for stored ones. Camera
 ingestion can first call `Quanomous.process(barcodeData)` and pass the returned
-filename to `load`. The example tests use the shared builder-generated compressed
-payload, so the Java/Kotlin API and default blocks are checked together.
+filename to `load`. The builder and library checks use a shared compressed payload fixture.
 
 During initialization, scan/store and select the intended routine. At Auto start,
 load and schedule that selection once. Do not put scheduling in the repeated
@@ -129,4 +128,4 @@ library schema. A team using different actions may replace them entirely. See
 field measurements are supplied by the team; no mock action in these examples
 is presented as a working motor or navigation implementation.
 
-For traditional iterative OpModes, see the [state-machine integration](state-machine-example.md) instead of scheduling a command group.
+For traditional LinearOpModes, see the [state-machine integration](state-machine-example.md) instead of scheduling a command group.

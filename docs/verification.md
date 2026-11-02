@@ -7,17 +7,14 @@ Use JDK 17, Android SDK platform 34 and Node.js. Set `JAVA_HOME` and `ANDROID_HO
 ```shell
 node builder/test-templates.cjs
 ./gradlew :library:check :library:assembleRelease :library:publishReleasePublicationToReviewRepository --max-workers=2
-./gradlew -p examples :java:testReleaseUnitTest :java:assembleRelease :kotlin:testReleaseUnitTest :kotlin:assembleRelease --refresh-dependencies --max-workers=2
+./gradlew -p examples :java:assembleRelease :kotlin:assembleRelease --refresh-dependencies --max-workers=2
 ```
 
 On Windows use `gradlew.bat` or `scripts/verify.ps1`. Library check includes debug/release tests and Android lint.
 
 The Node check uses bundled Blockly/Pako, creates all six BioBuzz blocks, calls the application's export function and compares `fixtures/biobuzz.json`. Library tests decode that compressed fixture. Independent Java/Kotlin consumers check custom handlers against the published AAR.
 
-Both consumers use the Devil Dogs BioBuzz contract. Tests check every field from
-the builder QR fixture, signed drive values, defaults, deposit aliases and
-construction before execution. The documented example route is also rebuilt
-using the real default blocks and compiled by both language adapters.
+Both consumers use the Devil Dogs BioBuzz contract. Consumer verification compiles and assembles the examples against the published AAR; the examples contain no tests. Builder and library tests remain in their respective modules.
 
 Regenerate fixtures deliberately with `node fixtures/create-fixture.cjs` only when the example contract changes, review the JSON, then rerun both checks.
 
@@ -39,7 +36,7 @@ Keep the repository name and Pages root. This branch adds no deployment workflow
 
 ## Local review result
 
-November 1, 2026: library checks and Android lint passed; local AAR publication and both independent consumer checks passed. Node template/export, connected-block clearing and Start registration regression checks passed. Documentation links and Git whitespace checks passed.
+November 1, 2026: library checks and Android lint passed; local AAR publication and both independent consumer builds passed. Node template/export, connected-block clearing and Start registration regression checks passed. Documentation links and Git whitespace checks passed.
 
 Desktop browser inspection confirmed Blockly/BioBuzz artwork, action blocks, a
 connected delay routine, QR rendering and return to the editor. Both directions
@@ -47,8 +44,7 @@ of template switching were verified after fixing duplicate Start registration
 and clearing.
 
 The onboarding review added a shared example loader, live JSON inspection and
-complete Java/Kotlin reporting-only adapters. Tests cover these entry points and
-block export failures, disconnected actions and duplicate Start roots. Legacy
+complete Java/Kotlin reporting-only adapters. Builder tests cover block export failures, disconnected actions and duplicate Start roots. Legacy
 Drive axial selection and fractional Delay export were corrected. Phone-sized
 layout now scrolls through editor and preview instead of compressing both into
 half a screen. A 390-by-844 browser viewport loaded the nine-step example and
@@ -58,3 +54,5 @@ timing explicitly excludes unknown team action durations.
 Physical phone/camera scanning and real offline-device acceptance remain
 outstanding. Public Maven hosting remains a release prerequisite, not a task
 completed by the local artifact checks.
+
+The state-machine walkthrough now uses a traditional LinearOpMode while loop and switch over the current JSON instruction. The previous action-runner/demo helpers and all example-module tests were removed. The SDK-specific OpMode remains documented integration code, not part of the standalone consumer build.

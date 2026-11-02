@@ -2,7 +2,7 @@
 
 These independent Android modules consume the locally published AAR by Maven coordinates. They do not use `project(':library')` or copied library source. The Java example applies no Kotlin plugin.
 
-Example source and tests use the standard FTC `org.firstinspires.ftc.teamcode`
+Example source uses the standard FTC `org.firstinspires.ftc.teamcode`
 package and matching folders. Copy example code into that package in your own
 TeamCode module (or adjust the package if your team has customized it). The
 library remains under `com.threedrd.quanomous`; keep those imports unchanged.
@@ -11,7 +11,7 @@ The two examples are separate alternatives, not modules to install together.
 Publish the library first, then run from the repository root:
 
 ```powershell
-./gradlew.bat -p examples :java:testReleaseUnitTest :java:assembleRelease :kotlin:testReleaseUnitTest :kotlin:assembleRelease --refresh-dependencies
+./gradlew.bat -p examples :java:assembleRelease :kotlin:assembleRelease --refresh-dependencies
 ```
 
 Use `./gradlew` on macOS/Linux. Set `ANDROID_HOME` for both builds, or give each build its own untracked `local.properties`.
@@ -38,19 +38,10 @@ Construct `JavaExample<T>` or `KotlinExample<T>` with your implementation of its
 list using your robot's framework. Both preserve signed drive coordinates,
 alignment defaults, tile offsets and deposit's legacy aliases.
 
-Tests decode the actual builder QR fixture and check every field passed to the
-robot factories. They also compile the example route, check ordering, confirm
-that compilation does not execute actions, and check offset defaults/aliases.
-The headless Blockly test reconstructs that same route from the default blocks.
-
 These are compiling robot-adapter examples, not installable robot applications.
-Hardware, localization and command implementations belong to the team. The tests
-use recording actions to verify the adapter without moving a robot. Asynchronous
+Hardware, localization and command implementations belong to the team. Asynchronous
 state machines must wait for completion; command integrations must use framework
 sequencing, requirements and cancellation. Complete framework project scaffolds
 remain follow-up work.
 
-For a non-command-based robot, see the [plain OpMode state-machine example](../docs/state-machine-example.md). It includes a loop-driven runner, nonblocking delay, completion and stop handling, and an FTC OpMode integration example.
-
-
-The plain OpMode demo uses the same shared BioBuzz routine and all six factories in BioBuzzStateMachineDemo. Hardware actions wait for a fresh gamepad A press; delay uses real elapsed time. See the walkthrough for copying the shared JSON into TeamCode assets and replacing simulated actions.
+For a non-command-based robot, see the [LinearOpMode switch example](../docs/state-machine-example.md). It reads the same shared BioBuzz routine and advances a step index inside `while (opModeIsActive())` when each switch case finishes. It requires no action interface or runner helper. The example modules contain no tests; verification compiles both consumers against the locally published AAR.
