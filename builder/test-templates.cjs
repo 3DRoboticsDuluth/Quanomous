@@ -41,6 +41,40 @@ assert.ok(preview.some(w => w.type === 'unmodeled'));
 // The old Decode definitions remain available after the new template registers.
 assert.equal(typeof context.Blockly.JavaScript.intake_gate, 'function');
 assert.equal(typeof context.Blockly.JavaScript.park, 'function');
+// The actual Clear handler must clear a connected graph without disposing its
+// children twice. UI-only collaborators are irrelevant to this regression.
+let clearHandler;
+const clearInfo = { textContent: 'previous payload' };
+const clearQr = { innerHTML: 'previous QR' };
+context.document = { getElementById(id) { return {
+  clearBtn: { addEventListener(_, callback) { clearHandler = callback; } },
+  info: clearInfo, qr: clearQr
+}[id]; } };
+context.stopAnimation = () => {};
+context.ensureStartBlock = () => {};
+context.updateVisualization = () => {};
+context.safeLocalStorageRemove = () => {};
+vm.runInContext(app.slice(app.indexOf("document.getElementById('clearBtn').addEventListener"),
+  app.indexOf('// PLAN JSON GENERATION')), context);
+clearHandler();
+assert.equal(workspace.getAllBlocks(false).length, 0);
+assert.equal(clearInfo.textContent, '');
+assert.equal(clearQr.innerHTML, '');
+// newBlock already registers top-level blocks. The application's initializer
+// must not register them a second time (which breaks browser disposal).
+const originalNewBlock = workspace.newBlock.bind(workspace);
+workspace.newBlock = function(type) {
+  const block = originalNewBlock(type);
+  block.initSvg = block.render = block.moveBy = () => {};
+  return block;
+};
+const ensureStart = app.indexOf('function ensureStartBlock()');
+vm.runInContext(app.slice(ensureStart, app.indexOf('\n}', ensureStart) + 2), context);
+context.ensureStartBlock();
+context.ensureStartBlock();
+assert.equal(workspace.getTopBlocks(false).length, 2);
+workspace.clear();
+assert.equal(workspace.getAllBlocks(false).length, 0);
 // Exercise selector initialization and clearing without a browser DOM.
 const selector = { value: '', options: [], replaceChildren() { this.options = []; },
   add(option) { this.options.push(option); }, addEventListener(_, callback) { this.change = callback; } };
@@ -72,3 +106,4 @@ assert.equal(clears, 1);
 assert.equal(updates, 1);
 console.log('PASS: all six BioBuzz commands, signed coordinates, fractional delay, offsets, legacy registration and compressed fixture');
 console.log('PASS: template selector, switch cancellation and confirmed clearing');
+console.log('PASS: Clear handles a connected block graph and removes old output');

@@ -438,6 +438,7 @@ function calculatePathSegments() {
   if (!startPos || currentPath.length === 0) {
     pathSegments = [];
     totalPathTime = 0;
+    updateTimerDisplay();
     return;
   }
   
@@ -629,14 +630,12 @@ function getPartnerRobotPoseAtTime(time) {
 function ensureStartBlock() {
   if (!workspace.getAllBlocks(false).some(b => b.type === 'start')) {
     const startBlock = workspace.newBlock('start');
-    workspace.addTopBlock(startBlock);
     startBlock.initSvg();
     startBlock.render();
     startBlock.moveBy(50, 50);
   }
   if (!workspace.getAllBlocks(false).some(b => b.type === 'partner_start')) {
     const partnerBlock = workspace.newBlock('partner_start');
-    workspace.addTopBlock(partnerBlock);
     partnerBlock.initSvg();
     partnerBlock.render();
     partnerBlock.moveBy(250, 50);
@@ -1491,7 +1490,7 @@ document.getElementById('bundleBtn').addEventListener('click', async () => {
 // CLEAR WORKSPACE
 
 document.getElementById('clearBtn').addEventListener('click', () => {
-  workspace.getAllBlocks(false).forEach(b => b.dispose(true));
+  workspace.clear();
   safeLocalStorageRemove('last_qr_payload');
   document.getElementById('qr').innerHTML = '';
   document.getElementById('info').textContent = '';

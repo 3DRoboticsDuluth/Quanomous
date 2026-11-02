@@ -29,3 +29,9 @@ These checks are separate from headless/Gradle checks. Inherited single-file bun
 ## Public cutover
 
 Keep the repository name and Pages root. This branch adds no deployment workflow, changes no Pages settings, and publishes no remote artifact. Review the new default template before merging. Choose public hosting/final Maven coordinates and verify a clean FTC consumer. Coordinate website links and migration notices before archiving old repositories.
+
+## Local review result
+
+November 1, 2026: library checks and Android lint passed; local AAR publication and both independent consumer checks passed. Node template/export, connected-block clearing and Start registration regression checks passed. Documentation links and Git whitespace checks passed.
+
+Desktop browser inspection confirmed Blockly/BioBuzz artwork, action blocks, a connected delay routine, QR rendering and return to the editor. Both directions of template switching were verified after fixing duplicate Start registration and clearing. No new console errors occurred in the corrected template switches. Phone layout, real camera scanning and offline-device acceptance remain outstanding.

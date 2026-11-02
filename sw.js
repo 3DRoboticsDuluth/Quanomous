@@ -1,7 +1,7 @@
 // Service Worker for caching files for offline use, if you add a new file then you need to update this accordingly.
 // This file shouldn't need to be updated for each season.
 
-const CACHE_NAME = 'ftc-qr-cache-consolidation-1';
+const CACHE_NAME = 'ftc-qr-cache-consolidation-3';
 const FILES_TO_CACHE = [
   './',
   './index.html',
