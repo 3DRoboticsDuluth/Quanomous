@@ -1,51 +1,53 @@
-# Java and Kotlin consumers
+# Four BioBuzz examples
 
-These independent Android modules consume the locally published AAR by Maven coordinates. They do not use `project(':library')` or copied library source. The Java example applies no Kotlin plugin.
+Choose your language and the way your robot runs autonomous:
 
-Example source uses the standard FTC `org.firstinspires.ftc.teamcode`
-package and matching folders. Copy example code into that package in your own
-TeamCode module (or adjust the package if your team has customized it). The
-library remains under `com.threedrd.quanomous`; keep those imports unchanged.
-The two examples are separate alternatives, not modules to install together.
+| | Java | Kotlin |
+| --- | --- | --- |
+| Plain LinearOpMode: while loop and switch/when | [QuanomousStateMachineOpMode.java](java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.java) | [QuanomousStateMachineOpMode.kt](kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.kt) |
+| Command-based: NextFTC 1.1.0 | [QuanomousCommandOpMode.java](java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.java) | [QuanomousCommandOpMode.kt](kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.kt) |
 
-Publish the library first, then run from the repository root:
+All four load the same [BioBuzz JSON asset](java/src/main/assets/biobuzz-route.json),
+which the builder loads with **Load BioBuzz example**. Each supports delay,
+drive, intake, deposit, chase and park. Delay waits for real elapsed time.
+Hardware actions display their parameters and wait for a fresh A-button press
+instead of moving a robot. Replace those marked sections with your team's controls
+and completion conditions. There is no separate preliminary example to run.
+
+## Copy into TeamCode
+
+1. [Install the Quanomous library](../docs/library.md).
+2. Copy ONE source file from the table into
+   `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/`. These are alternatives;
+   Java/Kotlin versions share class names. Kotlin requires your project's normal
+   Kotlin configuration. No other helper source files are needed.
+3. Copy the JSON asset into `TeamCode/src/main/assets/biobuzz-route.json`.
+4. For the command example, use a NextFTC 1.1.0 project and add
+   `implementation 'dev.nextftc:ftc:1.1.0'` to TeamCode if it is not present.
+   These examples target v1, matching BioBuzz, rather than the different v2 API.
+   The plain LinearOpMode source does not use NextFTC.
+5. Build/install your robot app and select the example in the Autonomous list.
+   Press Start; after the initial delay, release and press A for each hardware
+   step. Holding A does not skip later steps.
+
+For hardware integration, see the [LinearOpMode walkthrough](../docs/state-machine-example.md)
+or [command walkthrough](../docs/command-example.md). Instruction fields and units
+are described in the [BioBuzz contract](../docs/biobuzz-example.md).
+
+## Build these examples here
+
+These independent Android library modules compile the actual OpModes against
+the locally published Quanomous AAR, FTC RobotCore 12.0.0 and NextFTC 1.1.0.
+The FTC/NextFTC dependencies are compile-only; your robot project supplies them.
+The Java build uses no Kotlin plugin. These modules are compilation checks, not
+standalone robot apps; do not copy their Gradle files into TeamCode.
+
+After publishing locally, run from the repository root:
 
 ```powershell
-./gradlew.bat -p examples :java:assembleRelease :kotlin:assembleRelease --refresh-dependencies
+./gradlew.bat -p examples :java:assembleRelease :kotlin:assembleRelease
 ```
 
-Use `./gradlew` on macOS/Linux. Set `ANDROID_HOME` for both builds, or give each build its own untracked `local.properties`.
-
-- [JavaExample<T>](java/src/main/java/org/firstinspires/ftc/teamcode/JavaExample.java) registers team factories through `CommandFactory<T>`.
-- [KotlinExample<T>](kotlin/src/main/java/org/firstinspires/ftc/teamcode/KotlinExample.kt) registers the same fields through the map API.
-- [JavaDryRun](java/src/main/java/org/firstinspires/ftc/teamcode/JavaDryRun.java) and [KotlinDryRun](kotlin/src/main/java/org/firstinspires/ftc/teamcode/KotlinDryRun.kt) provide complete reporting-only factories to try first.
-
-Choose one language. For Java, copy `JavaExample.java` and `JavaDryRun.java` into
-your FTC project's `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/` folder.
-For Kotlin, copy `KotlinExample.kt` and `KotlinDryRun.kt` into that same package in
-a project already configured for Kotlin. Add the library dependency as described
-in [installation](../docs/library.md). Do not copy these modules' Gradle files into
-TeamCode or expect an OpMode to appear: these are helpers called by your OpMode.
-
-Both implement Devil Dogs' BioBuzz instruction contract: `delay`, `chase`,
-`intake`, `deposit`, `park`, and `drive`. The builder's default BioBuzz blocks
-produce the same fields. See [the example routine](java/src/main/assets/biobuzz-route.json)
-and [the integration walkthrough](../docs/biobuzz-example.md).
-
-Construct `JavaExample<T>` or `KotlinExample<T>` with your implementation of its
-`Auto<T>` interface. Each factory returns your command/action type. Then call
-`decode(barcodeData)`, `compile(json)`, or `load(filename)` and compose the returned
-list using your robot's framework. Both preserve signed drive coordinates,
-alignment defaults, tile offsets and deposit's legacy aliases.
-
-These are compiling robot-adapter examples, not installable robot applications.
-Hardware, localization and command implementations belong to the team. Asynchronous
-state machines must wait for completion; command integrations must use framework
-sequencing, requirements and cancellation. Complete framework project scaffolds
-remain follow-up work.
-
-For a non-command-based robot, see the [LinearOpMode switch example](../docs/state-machine-example.md). It reads the same shared BioBuzz routine and advances a step index inside `while (opModeIsActive())` when each switch case finishes. It requires no action interface or runner helper. The example modules contain no tests; verification compiles both consumers against the locally published AAR.
-
-For the LinearOpMode example, copy `java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.java` into the matching TeamCode source folder and copy `java/src/main/assets/biobuzz-route.json` into `TeamCode/src/main/assets/`. No adapter/dry-run helpers are needed for this switch-based example. The Java example compiles against FTC RobotCore 12.0.0 (compile-only); your robot project already supplies the FTC SDK.
-
-The equivalent Kotlin LinearOpMode is `kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.kt`. Copy it into the same TeamCode package instead of the Java OpMode, using a project already configured for Kotlin. Both builds compile against FTC RobotCore 12.0.0 and package the same asset; Kotlin includes `../java/src/main/assets` directly, so copy the JSON from the Java assets folder for either language.
+Use `./gradlew` on macOS/Linux and set `ANDROID_HOME`. Both modules package the
+same canonical asset; Kotlin references the Java assets directory directly.
+There are no tests in the example modules.

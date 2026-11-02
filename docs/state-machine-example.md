@@ -63,7 +63,7 @@ Drive uses all seven values above. Intake uses `place` and `side`; deposit uses
 `seconds`. Side/place strings in the builder output are lowercase. See the
 [BioBuzz walkthrough](biobuzz-example.md) for coordinate units and alignment
 semantics. This direct-switch example consumes current builder output; teams
-needing legacy aliases/defaults can copy that handling from `JavaExample`.
+needing legacy aliases/defaults can add that handling in their switch cases.
 
 For a scanned QR, replace the asset-read line with
 `String json = Quanomous.INSTANCE.decode(barcodeText);` using barcode text from

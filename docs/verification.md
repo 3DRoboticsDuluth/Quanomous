@@ -44,7 +44,7 @@ of template switching were verified after fixing duplicate Start registration
 and clearing.
 
 The onboarding review added a shared example loader, live JSON inspection and
-complete Java/Kotlin reporting-only adapters. Builder tests cover block export failures, disconnected actions and duplicate Start roots. Legacy
+Java/Kotlin OpMode examples. Builder tests cover block export failures, disconnected actions and duplicate Start roots. Legacy
 Drive axial selection and fractional Delay export were corrected. Phone-sized
 layout now scrolls through editor and preview instead of compressing both into
 half a screen. A 390-by-844 browser viewport loaded the nine-step example and
@@ -58,3 +58,5 @@ completed by the local artifact checks.
 The state-machine walkthrough now uses a traditional LinearOpMode while loop and switch over the current JSON instruction. The previous action-runner/demo helpers and all example-module tests were removed. The Java consumer now compiles the actual SDK-specific LinearOpMode using compile-only FTC RobotCore 12.0.0 and packages the canonical shared routine from its assets folder. The builder loads that same file.
 
 The Kotlin consumer also compiles its equivalent LinearOpMode against compile-only FTC RobotCore 12.0.0. Both AARs package the canonical BioBuzz asset from `examples/java/src/main/assets`; the Kotlin module references that directory instead of duplicating the routine.
+
+The examples now consist of four complete OpModes: plain LinearOpMode and NextFTC 1.1.0 command-based alternatives in Java and Kotlin. The former generic adapters and reporting helpers were removed. All four compile; both modules package the shared asset. No example tests are included.
