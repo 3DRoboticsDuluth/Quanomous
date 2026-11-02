@@ -5,6 +5,9 @@ import io
 import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[1]
+# Pages/Jekyll requires UTF-8 even when a Windows editor accepts local encoding.
+for document in [root / 'readme.md', * (root / 'docs').glob('*.md'), root / 'examples/README.md']:
+    document.read_text(encoding='utf-8')
 repo = root / 'build/repository/io/github/3droboticsduluth/quanomous'
 versions = list(repo.glob('*/'))
 assert versions, 'Missing local Maven publication'
