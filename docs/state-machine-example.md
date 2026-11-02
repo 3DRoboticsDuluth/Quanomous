@@ -2,7 +2,7 @@
 
 This is the traditional `runOpMode()` pattern: read the routine during Init,
 then repeatedly examine its current instruction inside
-`while (opModeIsActive())`. A switch selects the behavior. A step index advances
+`while (opModeIsActive())`. A Java switch or Kotlin when selects the behavior. A step index advances
 only when that behavior's completion condition is true. No command framework,
 action interface, or sequence-runner helper is needed.
 
@@ -11,9 +11,11 @@ Use the builder's **Load BioBuzz example** and **View JSON** to see the exact
 Install the library following [installation](library.md), then copy that JSON
 file unchanged into your robot project's
 `TeamCode/src/main/assets/biobuzz-route.json` (create the assets folder).
-Copy [QuanomousStateMachineOpMode.java](../examples/java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.java) into
+Choose one language. Copy [QuanomousStateMachineOpMode.java](../examples/java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.java) into
 `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/`.
-No other example helper files are required.
+For Kotlin, copy [QuanomousStateMachineOpMode.kt](../examples/kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousStateMachineOpMode.kt) into that same package folder in a TeamCode project already configured for Kotlin. Use either language, not both: the alternatives intentionally have the same class name. No other example helper files are required.
+
+Both versions use the JSON asset linked above. The Kotlin build includes the Java example's assets directory directly, so there is one canonical file rather than two copies.
 
 The example runs without robot hardware: delay waits for real elapsed time;
 the five hardware instruction types display their parameters and wait for a
@@ -67,10 +69,12 @@ For a scanned QR, replace the asset-read line with
 `String json = Quanomous.INSTANCE.decode(barcodeText);` using barcode text from
 your scanner during Init. For a saved routine, obtain the stored JSON array with
 `Quanomous.INSTANCE.getStorage().load(filename)`. Keep the switch loop unchanged.
+In Kotlin, those alternatives are `val json = Quanomous.decode(barcodeText)`
+and `val routine = Quanomous.storage.load(filename)`.
 The library handles decoding/storage; this example deliberately interprets JSON
 itself instead of constructing commands through `QuanomousCompiler`.
 
-The Java example build compiles the actual OpMode against FTC RobotCore 12.0.0
-and packages the shared JSON asset. The SDK is a compile-only dependency: your
+Both example builds compile their actual OpModes against FTC RobotCore 12.0.0
+and package the shared JSON asset. The SDK is a compile-only dependency: your
 FTC robot project supplies it. The example modules contain no tests; core library
 and builder regression tests remain.
