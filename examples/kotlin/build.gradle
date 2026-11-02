@@ -1,0 +1,20 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+android {
+    namespace = 'org.firstinspires.ftc.teamcode'
+    compileSdk 34
+    defaultConfig { minSdk 24 }
+    // Package the same canonical asset used by the Java example and builder.
+    sourceSets { main.assets.srcDir '../java/src/main/assets' }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+kotlin { compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8 } }
+dependencies {
+    compileOnly 'org.firstinspires.ftc:RobotCore:12.0.0'
+    implementation 'io.github.3droboticsduluth:quanomous:0.1.0-SNAPSHOT'
+}

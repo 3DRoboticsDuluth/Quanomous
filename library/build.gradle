@@ -1,0 +1,86 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+    id 'org.jetbrains.dokka' version '2.2.0'
+    id 'com.vanniktech.maven.publish.base' version '0.37.0'
+}
+
+group = 'io.github.3droboticsduluth'
+version = providers.gradleProperty('releaseVersion').getOrElse('0.1.0-SNAPSHOT')
+
+android {
+    namespace = 'com.threedrd.quanomous'
+    compileSdk 34
+    defaultConfig { minSdk 24 }
+    sourceSets { test.resources.srcDir rootProject.file('fixtures') }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    publishing { singleVariant('release') { withSourcesJar() } }
+}
+kotlin { compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8 } }
+
+dependencies {
+    api 'com.google.code.gson:gson:2.11.0'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'Review'
+            url = rootProject.layout.buildDirectory.dir('repository')
+        }
+    }
+}
+afterEvaluate {
+    publishing.publications {
+        release(MavenPublication) {
+            from components.release
+            artifact tasks.named('apiDocsJar')
+            artifactId = 'quanomous'
+            pom {
+                name = 'Quanomous'
+                description = 'Dynamic autonomous routine decoding, storage and compilation for FTC teams.'
+                url = 'https://github.com/3DRoboticsDuluth/Quanomous'
+                licenses {
+                    license {
+                        name = 'BSD 3-Clause License'
+                        url = 'https://opensource.org/license/bsd-3-clause'
+                    }
+                }
+                developers {
+                    developer {
+                        id = '3DRoboticsDuluth'
+                        name = '3D Robotics Duluth'
+                        url = 'https://github.com/3DRoboticsDuluth'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/3DRoboticsDuluth/Quanomous'
+                    connection = 'scm:git:https://github.com/3DRoboticsDuluth/Quanomous.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/3DRoboticsDuluth/Quanomous.git'
+                }
+            }
+        }
+    }
+}
+
+tasks.register('apiDocsJar', Jar) {
+    dependsOn 'dokkaGeneratePublicationHtml'
+    archiveClassifier = 'javadoc'
+    from layout.buildDirectory.dir('dokka/html')
+}
+
+// Central is opt-in. Ordinary checks/local publication need no signing or account secrets.
+if (providers.gradleProperty('centralRelease').getOrElse('false') == 'true') {
+    if (!(version.toString() ==~ /[0-9]+\.[0-9]+\.[0-9]+/)) {
+        throw new GradleException('Central releases require -PreleaseVersion=X.Y.Z')
+    }
+    mavenPublishing {
+        publishToMavenCentral(false) // Upload/validate only; final release is manual in Portal.
+        signAllPublications()
+    }
+}

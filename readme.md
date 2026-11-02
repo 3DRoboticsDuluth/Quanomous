@@ -1,50 +1,77 @@
-Offline / Tournament build
-=========================
+# Quanomous
 
-Quick steps to produce a single-folder or single-file bundle suitable for tournament use (works offline on phones/desktops).
+Quanomous lets FTC teams create autonomous routines with Blockly, transfer them as compressed QR codes, and map JSON instructions to robot actions. This repository contains the builder, a Kotlin Android library, and Java/Kotlin consumer examples. Teams define their own instructions and execution behavior.
 
-1. Download required libs into the project root (next to index.html):
+This is an unpublished consolidation candidate on `codex/consolidate-quanomous`.
+The [public builder](https://3droboticsduluth.github.io/Quanomous/) still runs the
+older version; use the local builder below to try this PR's BioBuzz template.
+There is not yet a public Maven installation URL for this candidate.
 
-```powershell
-Invoke-WebRequest -Uri "https://unpkg.com/blockly/blockly.min.js" -OutFile ".\blockly.min.js"
-Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js" -OutFile ".\pako.min.js"
-Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/kjua@0.1.1/kjua.min.js" -OutFile ".\kjua.min.js"
+## Start here
+
+- [Library installation and API](docs/library.md)
+- [Java and Kotlin examples](examples/README.md)
+- [Devil Dogs BioBuzz integration walkthrough](docs/biobuzz-example.md)
+- [BioBuzz and team-defined templates](docs/templates.md)
+- [Architecture and scope](docs/strategy.md)
+- [Provenance and attribution](docs/provenance.md)
+- [Verification and release](docs/verification.md)
+
+## Run the builder
+
+From the repository root:
+
+```shell
+python -m http.server 5500 --bind 127.0.0.1
 ```
 
-2. Serve the folder during development using a small server:
+If you have not checked out this candidate, clone it first:
 
-```powershell
-# from the project folder
-python -m http.server 5500
-# open http://127.0.0.1:5500
+```shell
+git clone --branch codex/consolidate-quanomous https://github.com/3DRoboticsDuluth/Quanomous.git
+cd Quanomous
 ```
 
-3. (Optional) Build a single HTML file for portability: run the included `build_single_file.ps1` which inlines local scripts and styles into a single `bundle.html`.
+Run the Python command above in that folder and open http://127.0.0.1:5500/.
+Keep the server running. Do not open `index.html` directly as a file: the shared
+example loader needs HTTP. BioBuzz is the default; Decode retains legacy blocks.
 
-See `build_single_file.ps1` for details.
+1. Click **Load BioBuzz example** and confirm replacing the routines.
+2. Click **View JSON**. It is the same routine used by both language examples.
+3. Choose one of the [four OpMode examples](examples/README.md): Java or Kotlin, plain LinearOpMode or command-based. These are framework-neutral templates; implement the marked team methods (including delay), and connect the command placeholder to your library if using that approach.
+4. Edit connected blocks and generate QR for your team's scanner.
 
-Good luck at your tournament!
+Only the chain below **Start** is exported. **Partner Start** is preview only.
+Switching templates asks before clearing both routines. Disconnected actions or
+multiple Start blocks must be resolved before export.
 
-# FTC QR Builder
+The BioBuzz preview shows explicit drive targets and delays. It does not simulate a team's intake/deposit paths, alignment or offsets. Starting poses and timing are illustrative. Workspaces are not restored after reload. The last payload is stored, but there is no recovery UI.
 
-Offline Progressive Web App to visually create autonomous command sequences for FTC robots.
-It generates a compressed QR code that can be scanned by a Limelight camera and decoded by the robot.
+The service worker caches scripts, the shared example and selected artwork over
+localhost/HTTPS. Offline upgrade and real camera use need device acceptance checks.
+The broken Bundle control was removed; the old PowerShell bundler is historical
+and unsupported. Use a complete checkout for local serving.
 
-### Features
-- Google Blockly drag-and-drop editor
-- Custom blocks: Start, DriveTo, IntakeRow, DepositAt, Delay
-- JSON → gzip → base64 → QR
-- Offline PWA with caching
+## Verify the branch
 
-### Usage
-1. Open `index.html` in your browser (or host via VS Code Live Server).
-2. Drag out a **Start** block.
-3. Add blocks like **DriveTo**, **Deposit**, **Delay**, etc.
-4. Click **Generate QR** to see the QR code.
-5. The last QR is cached offline for reuse.
+Use JDK 17, Android SDK platform 34 and Node.js, with JAVA_HOME and ANDROID_HOME configured. On Windows:
 
-### Robot Side
-Use `QRPlanDecoder.java` (provided in your FTC project) to decode QR → JSON → commands.
+```powershell
+./scripts/verify.ps1
+```
 
-### Updating
-Make sure to update whenever you change tuning values or change NavPoses.
+Other platforms can use the commands in [verification](docs/verification.md). Checks publish only into build/repository and consume that artifact from an independent Gradle build. They do not publish remotely or deploy Pages.
+
+## Licensing
+
+The imported library is BSD 3-Clause; see [library/LICENSE](library/LICENSE). Existing web assets retain their original provenance and third-party notices. This branch does not assign a blanket license to artwork or vendored code. See [provenance](docs/provenance.md).
+
+CI checks and the manually triggered Maven Central staging workflow are described
+in [release operations](docs/release.md). Nothing has been publicly published;
+the local installation instructions still apply. Pages publishes main at the
+repository root, so merging changes the public builder.
+
+The Maven group is `io.github.3droboticsduluth`; the source package and Android
+namespace remain `com.threedrd.quanomous`. The Central namespace is verified; see [release operations](docs/release.md).
+
+Before authorizing merge/deployment, complete the [final acceptance checklist](docs/acceptance.md).

@@ -17,6 +17,18 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+#routine-json {
+  width: 100%;
+  min-height: 160px;
+  box-sizing: border-box;
+  color: #e0e0e0;
+  background: #1e1e1e;
+  font-family: monospace;
+}
+
+#json-details { margin-top: 10px; width: 100%; flex-shrink: 0; }
+#json-details summary { cursor: pointer; }
+
 input, select, textarea {
   font-size: 16px !important;
 }
@@ -70,7 +82,7 @@ input, select, textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 #right-panel {
@@ -448,4 +460,15 @@ select {
   #path-info {
     max-height: 60px;
   }
+}
+
+/* On a phone, scroll through the editor and preview instead of squeezing both
+   into half a screen. Keep room to inspect the full-height BioBuzz blocks. */
+@media (max-width: 768px), (max-width: 1024px) and (orientation: portrait) {
+  body { height: auto; min-height: 100vh; overflow-y: auto; }
+  #left-panel, #right-panel { height: auto; flex: none; }
+  #blocklyDiv { height: 55vh; flex: none; }
+  #blockly-output { flex: none; min-height: 120px; max-height: 55vh; }
+  #canvas-container { flex: none; height: min(90vw, 420px); }
+  #path-info { max-height: 200px; }
 }

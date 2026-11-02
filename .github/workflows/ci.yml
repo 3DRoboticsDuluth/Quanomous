@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, codex/consolidate-quanomous]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install SDK
+        run: sdkmanager 'platforms;android-34' 'build-tools;34.0.0'
+      - name: Builder regression checks
+        run: node builder/test-templates.cjs
+      - name: Library checks and local Maven publication
+        run: bash ./gradlew :library:check :library:assembleRelease :library:publishReleasePublicationToReviewRepository --max-workers=2 --console=plain
+      - name: Check Central task graph without credentials or upload
+        run: bash ./gradlew :library:publishToMavenCentral -PcentralRelease=true -PreleaseVersion=0.1.0 --dry-run --max-workers=2 --console=plain
+      - name: Compile all four example templates
+        run: bash ./gradlew -p examples :java:assembleRelease :kotlin:assembleRelease --refresh-dependencies --max-workers=2 --console=plain
+      - name: Verify publication and packaged assets
+        run: python3 scripts/check-artifacts.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-results
+          path: |
+            library/build/reports/
+            build/repository/
+            examples/java/build/outputs/aar/
+            examples/kotlin/build/outputs/aar/
+          if-no-files-found: warn

@@ -1,17 +1,25 @@
-// Service Worker for caching files for offline use, if you add a new file then you need to update this accordingly.
-// This file shouldn't need to be updated for each season.
+// Cache the complete builder. Bump CACHE_NAME when shipped assets change,
+// and add any new runtime assets to FILES_TO_CACHE.
 
-const CACHE_NAME = 'ftc-qr-cache-v1';
+const CACHE_NAME = 'ftc-qr-cache-review-6';
 const FILES_TO_CACHE = [
   './',
   './index.html',
   './styles.css',
   './blocks_custom.js',
+  './builder/templates.js',
+  './examples/java/src/main/assets/biobuzz-route.json',
   './app.js',
+  './sw_register.js',
   './blockly.min.js',
   './kjua.min.js',
   './pako.min.js',
-  './manifest.json'
+  './manifest.json',
+  './Biobuzz-field-image.jpg',
+  './FTC Field Decode.jpg',
+  './Robot Decode.png',
+  './Logo.png',
+  './transparent-logo.png'
 ];
 
 self.addEventListener('install', event => {

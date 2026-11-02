@@ -9,7 +9,7 @@
   <title>FTC QR Generator with Path Planner</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="Logo.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="Logo.png">
   <link rel="stylesheet" href="styles.css">
 
   <!-- Suppress Blockly warnings -->
@@ -39,14 +39,22 @@
     <div id="blockly-header">
       <h1><img src="transparent-logo.png" width="200" height="60.862500000000004" alt="Quanomous"></h1>
       <div id="blockly-controls">
+        <label>Template <select id="template"><option value="biobuzz">BioBuzz</option><option value="decode">Decode (legacy)</option></select></label>
         <button id="generateBtn">Generate QR</button>
         <button id="clearBtn">Clear</button>
-        <button id="bundleBtn">Bundle</button>
+        <button id="loadExampleBtn">Load BioBuzz example</button>
+        <button id="jsonBtn">View JSON</button>
       </div>
     </div>
     <div id="blocklyDiv"></div>
     <div id="blockly-output">
       <div id="info"></div>
+      <div id="template-note" class="info-text"></div>
+      <div class="info-text">Connect actions below Start. Partner Start is preview only. Reloading loses edits.</div>
+      <details id="json-details">
+        <summary>Routine JSON</summary>
+        <textarea id="routine-json" aria-label="Routine JSON" readonly spellcheck="false"></textarea>
+      </details>
       <div id="qr"></div>
     </div>
   </div>
@@ -121,6 +129,7 @@
 </xml>
 
   <script src="blocks_custom.js"></script>
+  <script src="builder/templates.js"></script>
   <script src="app.js"></script>
   <script src="sw_register.js"></script>
 </body>

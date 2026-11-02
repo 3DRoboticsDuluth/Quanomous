@@ -1,0 +1,15 @@
+plugins { id 'com.android.library' }
+android {
+    namespace = 'org.firstinspires.ftc.teamcode'
+    compileSdk 34
+    defaultConfig { minSdk 24 }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+dependencies {
+    // Supplied at runtime by the team's FTC robot project.
+    compileOnly 'org.firstinspires.ftc:RobotCore:12.0.0'
+    implementation 'io.github.3droboticsduluth:quanomous:0.1.0-SNAPSHOT'
+}
