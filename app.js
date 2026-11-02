@@ -227,7 +227,7 @@ fieldImage.onerror = function() {
   imageLoaded = false;
   updateVisualization();
 };
-fieldImage.src = 'FTC Field.jpg';
+fieldImage.src = 'Biobuzz-field-image.jpg';
 
 robotImage.onload = function() {
   robotImageLoaded = true;
@@ -237,7 +237,7 @@ robotImage.onerror = function() {
   robotImageLoaded = false;
   updateVisualization();
 };
-robotImage.src = 'robot.png';
+robotImage.src = 'Robot Decode.png';
 
 // Don't try to load partner robot image - just use fallback box
 partnerRobotImageLoaded = false;
@@ -674,6 +674,8 @@ document.getElementById('partner-side').addEventListener('change', (e) => {
 });
 
 function updateVisualization() {
+  const fieldSource = window.QuanomousTemplates.active === 'decode' ? 'FTC Field Decode.jpg' : 'Biobuzz-field-image.jpg';
+  if (!fieldImage.src.endsWith(encodeURI(fieldSource))) fieldImage.src = fieldSource;
   const alliance = document.getElementById('alliance').value;
   const side = document.getElementById('side').value;
   currentAlliance = alliance;
@@ -711,6 +713,10 @@ function extractPathFromBlocks(startBlockType = 'start') {
   const path = [];
   const startBlock = workspace.getTopBlocks(true).find(b => b.type === startBlockType);
   if (!startBlock) return path;
+  if (window.QuanomousTemplates.active !== 'decode') {
+    return window.QuanomousTemplates.preview(startBlock,
+      startBlockType === 'partner_start' ? partnerStartPos : startPos, TILE_WIDTH);
+  }
 
   let current = startBlock.getNextBlock();
   while (current) {

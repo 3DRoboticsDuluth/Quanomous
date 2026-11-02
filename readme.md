@@ -1,50 +1,42 @@
-Offline / Tournament build
-=========================
+# Quanomous
 
-Quick steps to produce a single-folder or single-file bundle suitable for tournament use (works offline on phones/desktops).
+Quanomous lets FTC teams create autonomous routines with Blockly, transfer them as compressed QR codes, and map JSON instructions to robot actions. This repository contains the builder, a Kotlin Android library, and Java/Kotlin consumer examples. Teams define their own instructions and execution behavior.
 
-1. Download required libs into the project root (next to index.html):
+This branch is a local consolidation candidate. Public publishing and deployment have not changed. The existing hosted builder remains at [3droboticsduluth.github.io/Quanomous](https://3droboticsduluth.github.io/Quanomous/).
 
-```powershell
-Invoke-WebRequest -Uri "https://unpkg.com/blockly/blockly.min.js" -OutFile ".\blockly.min.js"
-Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js" -OutFile ".\pako.min.js"
-Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/kjua@0.1.1/kjua.min.js" -OutFile ".\kjua.min.js"
+## Start here
+
+- [Library installation and API](docs/library.md)
+- [Java and Kotlin examples](examples/README.md)
+- [BioBuzz and team-defined templates](docs/templates.md)
+- [Architecture and scope](docs/strategy.md)
+- [Provenance and attribution](docs/provenance.md)
+- [Verification and release](docs/verification.md)
+
+## Run the builder
+
+From the repository root:
+
+```shell
+python -m http.server 5500 --bind 127.0.0.1
 ```
 
-2. Serve the folder during development using a small server:
+Open http://127.0.0.1:5500/. BioBuzz is the default; Decode retains legacy blocks. Connect actions below Start and generate QR. Partner Start affects preview only. Switching templates asks before clearing both routines.
+
+The BioBuzz preview shows explicit drive targets and delays. It does not simulate a team's intake/deposit paths, alignment or offsets. Starting poses and timing are illustrative. Workspaces are not restored after reload. The last payload is stored, but there is no recovery UI.
+
+The service worker caches scripts and selected artwork over localhost/HTTPS. Offline upgrade and real camera use need acceptance checks. The inherited Bundle feature and PowerShell bundler have not been repaired or certified; use a complete checkout for local serving.
+
+## Verify the branch
+
+Use JDK 17, Android SDK platform 34 and Node.js, with JAVA_HOME and ANDROID_HOME configured. On Windows:
 
 ```powershell
-# from the project folder
-python -m http.server 5500
-# open http://127.0.0.1:5500
+./scripts/verify.ps1
 ```
 
-3. (Optional) Build a single HTML file for portability: run the included `build_single_file.ps1` which inlines local scripts and styles into a single `bundle.html`.
+Other platforms can use the commands in [verification](docs/verification.md). Checks publish only into build/repository and consume that artifact from an independent Gradle build. They do not publish remotely or deploy Pages.
 
-See `build_single_file.ps1` for details.
+## Licensing
 
-Good luck at your tournament!
-
-# FTC QR Builder
-
-Offline Progressive Web App to visually create autonomous command sequences for FTC robots.
-It generates a compressed QR code that can be scanned by a Limelight camera and decoded by the robot.
-
-### Features
-- Google Blockly drag-and-drop editor
-- Custom blocks: Start, DriveTo, IntakeRow, DepositAt, Delay
-- JSON → gzip → base64 → QR
-- Offline PWA with caching
-
-### Usage
-1. Open `index.html` in your browser (or host via VS Code Live Server).
-2. Drag out a **Start** block.
-3. Add blocks like **DriveTo**, **Deposit**, **Delay**, etc.
-4. Click **Generate QR** to see the QR code.
-5. The last QR is cached offline for reuse.
-
-### Robot Side
-Use `QRPlanDecoder.java` (provided in your FTC project) to decode QR → JSON → commands.
-
-### Updating
-Make sure to update whenever you change tuning values or change NavPoses.
+The imported library is BSD 3-Clause; see [library/LICENSE](library/LICENSE). Existing web assets retain their original provenance and third-party notices. This branch does not assign a blanket license to artwork or vendored code. See [provenance](docs/provenance.md).

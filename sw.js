@@ -1,17 +1,23 @@
 // Service Worker for caching files for offline use, if you add a new file then you need to update this accordingly.
 // This file shouldn't need to be updated for each season.
 
-const CACHE_NAME = 'ftc-qr-cache-v1';
+const CACHE_NAME = 'ftc-qr-cache-consolidation-1';
 const FILES_TO_CACHE = [
   './',
   './index.html',
   './styles.css',
   './blocks_custom.js',
+  './builder/templates.js',
   './app.js',
   './blockly.min.js',
   './kjua.min.js',
   './pako.min.js',
-  './manifest.json'
+  './manifest.json',
+  './Biobuzz-field-image.jpg',
+  './FTC Field Decode.jpg',
+  './Robot Decode.png',
+  './Logo.png',
+  './transparent-logo.png'
 ];
 
 self.addEventListener('install', event => {

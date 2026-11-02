@@ -39,6 +39,7 @@
     <div id="blockly-header">
       <h1><img src="transparent-logo.png" width="200" height="60.862500000000004" alt="Quanomous"></h1>
       <div id="blockly-controls">
+        <label>Template <select id="template"><option value="biobuzz">BioBuzz</option><option value="decode">Decode (legacy)</option></select></label>
         <button id="generateBtn">Generate QR</button>
         <button id="clearBtn">Clear</button>
         <button id="bundleBtn">Bundle</button>
@@ -47,6 +48,7 @@
     <div id="blocklyDiv"></div>
     <div id="blockly-output">
       <div id="info"></div>
+      <div id="template-note" class="info-text"></div>
       <div id="qr"></div>
     </div>
   </div>
@@ -121,6 +123,7 @@
 </xml>
 
   <script src="blocks_custom.js"></script>
+  <script src="builder/templates.js"></script>
   <script src="app.js"></script>
   <script src="sw_register.js"></script>
 </body>
