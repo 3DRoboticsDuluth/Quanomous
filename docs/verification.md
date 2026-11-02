@@ -78,3 +78,9 @@ See [release operations](release.md) for verified Pages settings, namespace
 requirements, environment/secrets setup and the manual staging workflow.
 Local verification now also checks POM metadata, sources/API documentation and
 packaged example artifacts with `python scripts/check-artifacts.py`.
+
+November 2, 2026 release-access setup: all four environment secrets are installed;
+main is the sole permitted branch, required reviewers are disabled by maintainer
+choice, and admin bypass is disabled. Local release signing and independent
+verification of five signatures passed. No remote staging or publication ran.
+See release operations for the public key fingerprint and recovery location.

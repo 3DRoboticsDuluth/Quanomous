@@ -46,8 +46,10 @@ Sources: [namespace registration](https://central.sonatype.org/register/namespac
 
 ## Configure release access before using the workflow
 
-Create a GitHub environment named `maven-central`, configure required reviewers
-and restrict deployment branches to main. Configure these environment secrets:
+The `maven-central` GitHub environment is configured with only the `main` branch
+allowed. Per maintainer choice, required reviewers are disabled; workflow dispatch
+remains manual, and final publication is manual in Central Portal. Administrator
+bypass is disabled. These environment secrets are installed:
 
 | Secret | Value |
 | --- | --- |
@@ -58,9 +60,21 @@ and restrict deployment branches to main. Configure these environment secrets:
 
 Use an organization-maintained signing key and distribute its public key as
 required by Central. Do not place credentials or private keys in Git or logs.
-Environment protections/secrets are setup prerequisites, not settings created by
-this PR. The workflow name alone does not enforce reviewer approval: the GitHub
-environment must be configured. No secrets were inspected or installed.
+Setup completed November 2, 2026. The Central token expires November 2, 2126,
+as requested by the maintainer. The dedicated RSA-4096 release signing key has
+public fingerprint `9F5F830976CBD1ECC1200E93019896ECAC344EC8`; its public key was
+sent to keyserver.ubuntu.com. Signing-key expiry is two years from creation.
+
+The current recovery backup is encrypted with Windows DPAPI at
+`%LOCALAPPDATA%/3DRoboticsDuluth/Quanomous/release-signing/recovery.dpapi`.
+It contains the exported key and passphrase and can be decrypted only in the
+originating Windows user's context. It is not a portable organizational backup;
+arrange secure organizational recovery storage before relying on another machine.
+Secret values are not stored in the repository.
+
+Required reviewers can be added later if an additional GitHub approval gate is
+wanted. The five existing organization teams were given read access and together
+cover all 18 current members, but none is a required release reviewer now.
 
 ## Release workflow: manual staging, then manual publication
 
@@ -76,7 +90,7 @@ When a release is authorized:
 4. Run **Stage Maven Central release** from main, entering X.Y.Z. The workflow
    validates the version and tag ancestry, checks out that exact commit and runs
    the full verification without publishing secrets.
-5. Approve the maven-central environment job. It checks out the verified commit,
+5. The main-only maven-central environment job checks out the verified commit,
    signs its AAR, sources, Dokka HTML documentation JAR and metadata, and calls
    `:library:publishToMavenCentral -PcentralRelease=true -PreleaseVersion=X.Y.Z`.
 6. This uploads a deployment for Portal validation only; automatic final release
@@ -89,9 +103,9 @@ When a release is authorized:
 Ordinary builds remain 0.1.0-SNAPSHOT and publish only to build/repository. The
 releaseVersion property changes the version without changing the normal snapshot
 consumer checks. centralRelease=true enables remote staging and signing only for
-strict X.Y.Z releases; it is not needed for local builds. The Portal task was
-checked locally using --dry-run only; signing/upload/Portal validation require
-real credentials and have not been performed.
+strict X.Y.Z releases; it is not needed for local builds. The Portal task graph was checked using --dry-run. The release publication was
+also signed locally and all five detached signatures independently verified
+using GnuPG. No upload task or Portal validation/publication was performed.
 
 Implementation uses the [Vanniktech base publishing plugin](https://vanniktech.github.io/gradle-maven-publish-plugin/base/)
 and its [manual Central publishing mode](https://vanniktech.github.io/gradle-maven-publish-plugin/central/).
