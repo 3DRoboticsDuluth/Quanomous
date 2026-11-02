@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode
 
 import com.google.gson.JsonArray
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.threedrd.quanomous.Quanomous
 import com.threedrd.quanomous.QuanomousCompiler
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 
 @Autonomous(name = "Quanomous BioBuzz Kotlin commands")
 class QuanomousCommandOpMode : LinearOpMode() {
@@ -33,7 +33,6 @@ class QuanomousCommandOpMode : LinearOpMode() {
     }
 
     // Replace these factory bodies with your team's commands; construct here, schedule above.
-
     private fun delay(seconds: Double): Command = TODO("Supply your team's delay command")
 
     private fun drive(tx: Double, ty: Double, h: Double): Command = TODO("Supply your team's drive command")
@@ -45,7 +44,6 @@ class QuanomousCommandOpMode : LinearOpMode() {
     private fun chase(cycles: Int): Command = TODO("Supply your team's chase command")
 
     private fun park(side: String): Command = TODO("Supply your team's park command")
-
 
     private fun readRoutine(): JsonArray = try {
         hardwareMap.appContext.assets.open("biobuzz-route.json")

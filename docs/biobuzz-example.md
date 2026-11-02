@@ -6,7 +6,7 @@ a command-based OpMode in Java or Kotlin. Each loads the same
 [nine-step routine](../examples/java/src/main/assets/biobuzz-route.json) used by
 **Load BioBuzz example** in the builder. Use **View JSON** to inspect it.
 
-The routine waits 0.4 seconds, drives to a signed pose, deposits preloads, intakes
+The routine describes a 0.4-second wait, drives to a signed pose, deposits preloads, intakes
 from the garden and deposits with an offset, intakes from the flower and deposits
 again, chases for two cycles, then parks. It is an illustrative composition,
 not a measured competition route. Team hardware and navigation are represented by private methods that teams
@@ -27,6 +27,10 @@ is left/center/right. Offsets ao/lo are destination-relative axial/lateral
 values in tiles. Apply alignment/offsets in the team's navigation code once.
 Intake places are garden, flower and loading_zone; sides are left and right.
 Chase uses a positive integer cycle count.
+
+The command examples intentionally map drive to tx, ty and h only; the extra
+alignment/offset fields remain in the shared asset for teams that use them.
+Delay and every hardware behavior are team implementation placeholders.
 
 The builder emits current field names. Teams supporting older routines can add
 legacy deposit txo/tyo aliases, with ao/lo taking precedence even when zero.

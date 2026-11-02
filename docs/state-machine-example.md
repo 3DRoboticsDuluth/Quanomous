@@ -2,7 +2,7 @@
 
 This is the traditional `runOpMode()` pattern: read the routine during Init,
 then repeatedly examine its current instruction inside
-`while (opModeIsActive())`. A Java switch or Kotlin when selects the behavior. A step index advances
+`while (opModeIsActive())`. A Java switch or Kotlin when selects the behavior. An iterator advances
 only when that behavior's completion condition is true. No command framework,
 action interface, or sequence-runner helper is needed.
 
@@ -25,34 +25,34 @@ Keep each call nonblocking so the outer loop can continue checking OpMode activi
 
 ## Read the BioBuzz parameters
 
-The example displays the complete current JSON object. Real hardware cases read
-its fields directly, for example:
+Each private step method receives the current JSON object. Read its fields
+directly, for example:
 
 ```java
 double tx = step.get("tx").getAsDouble();
 double ty = step.get("ty").getAsDouble();
 double heading = step.get("h").getAsDouble();
-String axial = step.has("axial") ? step.get("axial").getAsString() : "center";
-String lateral = step.has("lateral") ? step.get("lateral").getAsString() : "center";
-double ao = step.has("ao") ? step.get("ao").getAsDouble() : 0;
-double lo = step.has("lo") ? step.get("lo").getAsDouble() : 0;
 ```
 
-Drive uses all seven values above. Intake uses `place` and `side`; deposit uses
+This is the same minimal drive mapping used by the command examples. The builder
+also emits axial/lateral alignment and ao/lo offsets, available in the JSON if
+your navigation code needs them. Intake uses `place` and `side`; deposit uses
 `side`, `ao`, `lo`; chase uses integer `cycles`; park uses `side`; delay uses
 `seconds`. Side/place strings in the builder output are lowercase. See the
 [BioBuzz walkthrough](biobuzz-example.md) for coordinate units and alignment
 semantics. This direct-switch example consumes current builder output; teams
 needing legacy aliases/defaults can add that handling in their switch cases.
 
-For a scanned QR, replace the asset-read line with
-`String json = Quanomous.INSTANCE.decode(barcodeText);` using barcode text from
-your scanner during Init. For a saved routine, obtain the stored JSON array with
-`Quanomous.INSTANCE.getStorage().load(filename)`. Keep the switch loop unchanged.
-In Kotlin, those alternatives are `val json = Quanomous.decode(barcodeText)`
-and `val routine = Quanomous.storage.load(filename)`.
-The library handles decoding/storage; this example deliberately interprets JSON
-itself instead of constructing commands through `QuanomousCompiler`.
+For a scanned QR, replace the body of readRoutine() with decoding/parsing of
+barcode text provided during Init: `Quanomous.INSTANCE.parse(Quanomous.INSTANCE.decode(barcodeText))`
+in Java or `Quanomous.parse(Quanomous.decode(barcodeText))` in Kotlin.
+For saved routines use `Quanomous.INSTANCE.load(filename)` or
+`Quanomous.load(filename)`. Each returns the array consumed by the same loop.
+
+File/parsing errors currently return an empty array, making the loop empty.
+Add your team's error reporting policy where marked. The library handles
+JSON decoding/storage; these examples deliberately interpret JSON directly
+instead of constructing commands through QuanomousCompiler.
 
 Both example builds compile against FTC RobotCore 12.0.0 and package the shared JSON asset. The SDK is a compile-only dependency: your
 FTC robot project supplies it. The example modules contain no tests; core library

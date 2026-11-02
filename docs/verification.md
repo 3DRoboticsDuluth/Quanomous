@@ -55,12 +55,19 @@ Physical phone/camera scanning and real offline-device acceptance remain
 outstanding. Public Maven hosting remains a release prerequisite, not a task
 completed by the local artifact checks.
 
-The state-machine walkthrough now uses a traditional LinearOpMode while loop and switch over the current JSON instruction. The previous action-runner/demo helpers and all example-module tests were removed. The Java consumer now compiles the actual SDK-specific LinearOpMode using compile-only FTC RobotCore 12.0.0 and packages the canonical shared routine from its assets folder. The builder loads that same file.
+## Current example scope
 
-The Kotlin consumer also compiles its equivalent LinearOpMode against compile-only FTC RobotCore 12.0.0. Both AARs package the canonical BioBuzz asset from `examples/java/src/main/assets`; the Kotlin module references that directory instead of duplicating the routine.
+Four framework-neutral integration templates compile: command mapping and plain
+LinearOpMode in both Java and Kotlin. They contain no command-framework dependency.
+Command examples use local placeholder Command types, named factories and a
+sequence/schedule integration point. Plain examples use an iterator and switch/when,
+advancing after a team step method returns true. Delay is a team placeholder too.
+There is no timer, entry flag, button simulation or telemetry scaffolding.
 
-The examples now consist of four complete OpModes: plain LinearOpMode and NextFTC 1.1.0 command-based alternatives in Java and Kotlin. The former generic adapters and reporting helpers were removed. All four compile; both modules package the shared asset. No example tests are included.
-
-The four OpModes were simplified to JSON loading and dispatch. Java command registration uses a nested anonymous HashMap; named private methods replace simulation, button handling and telemetry. Robot-specific placeholders deliberately throw until implemented. Source compilation verifies the examples; no claim of robot execution is made.
-
-Current examples use no command-framework dependency. Their local Command types mark library integration points. The LinearOpMode loops use iterators, with timing delegated to team methods. Both language builds pass after these simplifications.
+The Java and Kotlin modules compile against the local Quanomous AAR and compile-only
+FTC RobotCore 12.0.0. Both package the exact canonical asset from
+examples/java/src/main/assets; Kotlin references that directory directly.
+Source compilation does not verify robot behavior or framework scheduling: teams
+must implement the placeholders and integrate their scheduler/lifecycle. The
+command drive mapping intentionally uses only tx, ty and h. No tests are included
+in example modules; library and builder regression checks remain.

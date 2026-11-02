@@ -31,7 +31,6 @@ class QuanomousStateMachineOpMode : LinearOpMode() {
 
     private fun delay(step: JsonObject): Boolean = TODO("Supply your team's delay behavior")
 
-
     private fun drive(step: JsonObject): Boolean = TODO("Supply your team's drive behavior")
 
     private fun intake(step: JsonObject): Boolean = TODO("Supply your team's intake behavior")
@@ -41,7 +40,6 @@ class QuanomousStateMachineOpMode : LinearOpMode() {
     private fun chase(step: JsonObject): Boolean = TODO("Supply your team's chase behavior")
 
     private fun park(step: JsonObject): Boolean = TODO("Supply your team's park behavior")
-
 
     private fun readRoutine(): JsonArray = try {
         hardwareMap.appContext.assets.open("biobuzz-route.json")

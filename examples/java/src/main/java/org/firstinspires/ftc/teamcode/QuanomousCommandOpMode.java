@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.google.gson.JsonArray;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.threedrd.quanomous.CommandFactory;
 import com.threedrd.quanomous.QuanomousCompiler;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 
 @Autonomous(name = "Quanomous BioBuzz Java commands")
 public class QuanomousCommandOpMode extends LinearOpMode {

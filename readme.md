@@ -38,7 +38,7 @@ example loader needs HTTP. BioBuzz is the default; Decode retains legacy blocks.
 
 1. Click **Load BioBuzz example** and confirm replacing the routines.
 2. Click **View JSON**. It is the same routine used by both language examples.
-3. Choose one of the [four OpMode examples](examples/README.md): Java or Kotlin, plain LinearOpMode or command-based.
+3. Choose one of the [four OpMode examples](examples/README.md): Java or Kotlin, plain LinearOpMode or command-based. These are framework-neutral templates; implement the marked team methods (including delay), and connect the command placeholder to your library if using that approach.
 4. Edit connected blocks and generate QR for your team's scanner.
 
 Only the chain below **Start** is exported. **Partner Start** is preview only.
