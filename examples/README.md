@@ -8,11 +8,10 @@ Choose your language and the way your robot runs autonomous:
 | Command-based: NextFTC 1.1.0 | [QuanomousCommandOpMode.java](java/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.java) | [QuanomousCommandOpMode.kt](kotlin/src/main/java/org/firstinspires/ftc/teamcode/QuanomousCommandOpMode.kt) |
 
 All four load the same [BioBuzz JSON asset](java/src/main/assets/biobuzz-route.json),
-which the builder loads with **Load BioBuzz example**. Each supports delay,
-drive, intake, deposit, chase and park. Delay waits for real elapsed time.
-Hardware actions display their parameters and wait for a fresh A-button press
-instead of moving a robot. Replace those marked sections with your team's controls
-and completion conditions. There is no separate preliminary example to run.
+which the builder loads with **Load BioBuzz example**. They focus on reading and
+interpreting the six instructions. Delay is implemented; the five robot-specific
+methods are explicit placeholders to replace with your team's code before use.
+There are no button simulations, telemetry demonstrations or extra helper classes.
 
 ## Copy into TeamCode
 
@@ -26,9 +25,9 @@ and completion conditions. There is no separate preliminary example to run.
    `implementation 'dev.nextftc:ftc:1.1.0'` to TeamCode if it is not present.
    These examples target v1, matching BioBuzz, rather than the different v2 API.
    The plain LinearOpMode source does not use NextFTC.
-5. Build/install your robot app and select the example in the Autonomous list.
-   Press Start; after the initial delay, release and press A for each hardware
-   step. Holding A does not skip later steps.
+5. Implement the marked team methods, then build/install your robot app and select
+   the example in the Autonomous list. Unimplemented methods throw rather than
+   silently skipping robot actions.
 
 For hardware integration, see the [LinearOpMode walkthrough](../docs/state-machine-example.md)
 or [command walkthrough](../docs/command-example.md). Instruction fields and units

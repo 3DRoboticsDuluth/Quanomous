@@ -17,11 +17,10 @@ For Kotlin, copy [QuanomousStateMachineOpMode.kt](../examples/kotlin/src/main/ja
 
 Both versions use the JSON asset linked above. The Kotlin build includes the Java example's assets directory directly, so there is one canonical file rather than two copies.
 
-The example runs without robot hardware: delay waits for real elapsed time;
-the five hardware instruction types display their parameters and wait for a
-fresh gamepad A press to simulate completion. Those completion conditions and
-entry/exit comments are the places to substitute your team's robot logic.
-
+Delay is implemented. Replace the five private robot-step methods before running
+a routine; their placeholders throw to avoid pretending to execute hardware.
+Each method receives the current JSON instruction and an `entering` flag, and
+returns whether the step is complete. No button simulation is involved.
 
 ## How the state advances
 
@@ -37,10 +36,10 @@ For example, chase might move through SEEK, COLLECT and SCORE, increment a cycle
 counter after SCORE, and complete only after the requested number of cycles.
 The outer routine index stays on chase throughout those internal transitions.
 
-Keep all cases nonblocking: do not put a long-running inner while loop or sleep
+Keep all step methods nonblocking: do not put a long-running inner while loop or sleep
 inside one case. That lets the outer loop continue updating telemetry, handling
 Stop and running the team's normal controller updates. Finish each step's
-outputs before advancing, and put robot-wide shutdown in the `finally` block.
+outputs before advancing, and use your team's normal robot-wide shutdown.
 Add your team's normal autonomous time limit when wiring in hardware.
 
 ## Read the BioBuzz parameters

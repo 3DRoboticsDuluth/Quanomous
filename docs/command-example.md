@@ -1,35 +1,27 @@
-# BioBuzz command-based integration
+# BioBuzz command mapping
 
 Choose the Java or Kotlin **QuanomousCommandOpMode** in the
-[examples table](../examples/README.md). Both are complete NextFTC 1.1.0 OpModes
-using the same shared BioBuzz asset as the builder and plain LinearOpMode examples.
+[examples table](../examples/README.md). Both load the shared JSON during Init,
+map each instruction to a named private command factory, build a sequential group,
+and schedule it once at Start.
 
-During Init, the handler map converts each JSON instruction into a `Command`.
-`delay` creates NextFTC's `Delay`; the other five handlers create simulated
-commands. `SequentialGroup` preserves the routine's order. Nothing is scheduled
-while reading JSON. At Start, the group is scheduled once; NextFTC updates it and
-advances when the active command finishes. Stop cancels the group.
+Java nests an anonymous `HashMap` with `put` registrations inside the compiler.
+Kotlin uses `mapOf`. Each handler extracts the instruction's parameters and passes
+them to `delay`, `drive`, `intake`, `deposit`, `chase` or `park`.
 
-The simulated hardware commands show the full JSON instruction in telemetry.
-They begin in `start()`, check for a fresh A press in `update()`, expose completion
-through `isDone`, and release outputs in `stop(interrupted)`. Replace each
-`simulated(step)` factory with your team's corresponding drive, intake, deposit,
-chase or park command. Extract its parameters from `step`, preserving the
-[BioBuzz units and fields](biobuzz-example.md).
+Delay returns the framework's delay command. Replace the other factory bodies
+with your team's commands. Those commands own execution, completion, subsystem
+requirements and cancellation. Factories construct commands; they do not schedule
+or start hardware. The example uses NextFTC 1.1.0 so it compiles, but the same
+mapping pattern works with your preferred command library: use its command type,
+sequence group and lifecycle. SolversLib and WPILib APIs are not interchangeable
+with NextFTC imports.
 
-For a drive command, initialize the target in `start()`, update navigation in
-`update()`, report at-target completion through `isDone`, and stop the drivetrain
-in `stop(interrupted)`. Declare the command's subsystem requirements with
-`requires(...)`. Use the same lifecycle for mechanisms and cycle sequences.
-Factories construct commands; they must not start hardware or schedule commands.
-Keep your team's normal autonomous deadline and robot-wide shutdown.
+`readRoutine()` contains file/parsing error handling and returns null on failure,
+so Init can return without creating a partial sequence. Add your team's reporting
+and runtime handling as appropriate. These examples intentionally concentrate on
+JSON mapping rather than telemetry, controls or robot lifecycle policy.
 
-To use camera output instead of the asset, decode the barcode text during Init
-and compile the resulting JSON, or use `compiler.load(filename)` for a saved
-routine. Schedule the resulting group at Auto start, never in a repeated scan
-callback. Team-specific instructions can be added by changing the handler map
-and builder template together. Quanomous does not impose this BioBuzz contract.
-
-The examples pin [NextFTC v1.1.0](https://github.com/NextFTC/NextFTC/tree/v1.1.0)
-to match the source team project; v2 has a different API. A SolversLib integration
-would use its command type, scheduler and sequence group in the same places.
+For scanned input, decode the barcode text and compile the resulting JSON array;
+for a saved routine use `compiler.load(filename)`. The
+[BioBuzz contract](biobuzz-example.md) describes fields and units.

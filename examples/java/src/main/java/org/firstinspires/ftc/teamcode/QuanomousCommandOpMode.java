@@ -1,93 +1,67 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.threedrd.quanomous.CommandFactory;
-import com.threedrd.quanomous.Quanomous;
 import com.threedrd.quanomous.QuanomousCompiler;
+// Use your preferred command library (NextFTC, SolversLib, WPILib, etc.).
+// This compiling example uses NextFTC 1.1.0's Command, group and OpMode types.
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.ftc.NextFTCOpMode;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-/** NextFTC 1.1.0 example. Replace simulated commands with your team's hardware commands. */
 @Autonomous(name = "Quanomous BioBuzz Java commands")
 public class QuanomousCommandOpMode extends NextFTCOpMode {
     private Command routine;
-    private String current = "Ready";
 
     @Override public void onInit() {
-        Map<String, CommandFactory<Command>> handlers = new HashMap<>();
-        handlers.put("delay", step -> new Delay(step.get("seconds").getAsDouble()));
-        handlers.put("drive", step -> simulated(step)); // tx, ty, h, axial, lateral, ao, lo
-        handlers.put("intake", step -> simulated(step)); // place, side
-        handlers.put("deposit", step -> simulated(step)); // side, ao, lo
-        handlers.put("chase", step -> simulated(step)); // cycles
-        handlers.put("park", step -> simulated(step)); // side
-        QuanomousCompiler<Command> compiler = QuanomousCompiler.fromHandlers(handlers);
-        try {
-            String json = readRoutine();
-            List<Command> commands = compiler.compile(Quanomous.INSTANCE.parse(json));
-            routine = new SequentialGroup(commands.toArray(new Command[0]));
-            telemetry.addLine("Ready: Start, then press A for each simulated hardware command");
-        } catch (IOException | RuntimeException failure) {
-            telemetry.addData("Cannot load routine", failure.getMessage());
-        }
-        telemetry.update();
+        JsonArray steps = readRoutine();
+        if (steps == null) return;
+        routine = new SequentialGroup(QuanomousCompiler.fromHandlers(
+            new HashMap<String, CommandFactory<Command>>() {{
+                put("delay", step -> delay(step.get("seconds").getAsDouble()));
+                put("drive", step -> drive(step.get("tx").getAsDouble(), step.get("ty").getAsDouble(), step.get("h").getAsDouble(), step.get("axial").getAsString(), step.get("lateral").getAsString(), step.get("ao").getAsDouble(), step.get("lo").getAsDouble()));
+                put("intake", step -> intake(step.get("place").getAsString(), step.get("side").getAsString()));
+                put("deposit", step -> deposit(step.get("side").getAsString(), step.get("ao").getAsDouble(), step.get("lo").getAsDouble()));
+                put("chase", step -> chase(step.get("cycles").getAsInt()));
+                put("park", step -> park(step.get("side").getAsString()));
+            }}
+        ).compile(steps).toArray(new Command[0]));
     }
 
     @Override public void onStartButtonPressed() {
         if (routine != null) routine.schedule();
     }
 
-    @Override public void onUpdate() {
-        telemetry.addData("Command", current);
-        telemetry.addLine("Hardware commands are simulated: release then press A to finish");
-        telemetry.update();
+    // Replace these factory bodies with your team's commands; construct here, schedule above.
+    private Command delay(double seconds) {
+        return new Delay(seconds);
+    }
+    private Command drive(double tx, double ty, double h, String axial, String lateral, double ao, double lo) {
+        throw new UnsupportedOperationException("Supply your team's drive command");
+    }
+    private Command intake(String place, String side) {
+        throw new UnsupportedOperationException("Supply your team's intake command");
+    }
+    private Command deposit(String side, double ao, double lo) {
+        throw new UnsupportedOperationException("Supply your team's deposit command");
+    }
+    private Command chase(int cycles) {
+        throw new UnsupportedOperationException("Supply your team's chase command");
+    }
+    private Command park(String side) {
+        throw new UnsupportedOperationException("Supply your team's park command");
     }
 
-    @Override public void onStop() {
-        if (routine != null) routine.cancel();
-        // Real robot: also stop ALL drivetrain/mechanism outputs here.
-    }
-
-    private Command simulated(JsonObject step) {
-        return new Command() {
-            private boolean previousA;
-            private boolean finished;
-            @Override public void start() {
-                previousA = gamepad1.a;
-                finished = false;
-                current = step.toString();
-                // Real command: initialize targets/outputs using the instruction fields.
-            }
-            @Override public void update() {
-                boolean pressed = gamepad1.a;
-                finished = pressed && !previousA;
-                previousA = pressed;
-                // Real command: update control logic; set finished from sensors/controller state.
-            }
-            @Override public boolean isDone() { return finished; }
-            @Override public void stop(boolean interrupted) {
-                // Real command: release its outputs on completion or cancellation.
-            }
-        };
-        // Hardware commands must declare their subsystem requirements with requires(...).
-    }
-
-    private String readRoutine() throws IOException {
-        try (InputStream input = hardwareMap.appContext.getAssets().open("biobuzz-route.json");
-             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
-            int count;
-            while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
-            return output.toString("UTF-8");
+    private JsonArray readRoutine() {
+        try (java.io.InputStream input = hardwareMap.appContext.getAssets().open("biobuzz-route.json");
+             java.io.Reader reader = new java.io.InputStreamReader(input, java.nio.charset.StandardCharsets.UTF_8)) {
+            return new com.google.gson.JsonParser().parse(reader).getAsJsonArray();
+        } catch (java.io.IOException | RuntimeException failure) {
+            // Add your team's load-error handling here; do not start a partial routine.
+            return null;
         }
     }
 }

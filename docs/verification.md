@@ -60,3 +60,5 @@ The state-machine walkthrough now uses a traditional LinearOpMode while loop and
 The Kotlin consumer also compiles its equivalent LinearOpMode against compile-only FTC RobotCore 12.0.0. Both AARs package the canonical BioBuzz asset from `examples/java/src/main/assets`; the Kotlin module references that directory instead of duplicating the routine.
 
 The examples now consist of four complete OpModes: plain LinearOpMode and NextFTC 1.1.0 command-based alternatives in Java and Kotlin. The former generic adapters and reporting helpers were removed. All four compile; both modules package the shared asset. No example tests are included.
+
+The four OpModes were simplified to JSON loading and dispatch. Java command registration uses a nested anonymous HashMap; named private methods replace simulation, button handling and telemetry. Robot-specific placeholders deliberately throw until implemented. Source compilation verifies the examples; no claim of robot execution is made.

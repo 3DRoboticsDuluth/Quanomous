@@ -9,8 +9,8 @@ a command-based OpMode in Java or Kotlin. Each loads the same
 The routine waits 0.4 seconds, drives to a signed pose, deposits preloads, intakes
 from the garden and deposits with an offset, intakes from the flower and deposits
 again, chases for two cycles, then parks. It is an illustrative composition,
-not a measured competition route. Team hardware and navigation are deliberately
-replaced by explicit simulated completion conditions in the examples.
+not a measured competition route. Team hardware and navigation are represented by private methods that teams
+implement; the examples focus on JSON interpretation.
 
 | Instruction | Fields |
 | --- | --- |
