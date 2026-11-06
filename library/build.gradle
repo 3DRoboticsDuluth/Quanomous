@@ -40,7 +40,6 @@ afterEvaluate {
         release(MavenPublication) {
             from components.release
             artifact tasks.named('apiDocsJar')
-            artifactId = 'quanomous'
             pom {
                 name = 'Quanomous'
                 description = 'Dynamic autonomous routine decoding, storage and compilation for FTC teams.'
@@ -73,6 +72,9 @@ tasks.register('apiDocsJar', Jar) {
     archiveClassifier = 'javadoc'
     from layout.buildDirectory.dir('dokka/html')
 }
+
+// The plugin uses these coordinates for both the publication and the Portal label.
+mavenPublishing.coordinates(null, 'quanomous', null)
 
 // Central is opt-in. Ordinary checks/local publication need no signing or account secrets.
 if (providers.gradleProperty('centralRelease').getOrElse('false') == 'true') {
